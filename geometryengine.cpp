@@ -224,7 +224,7 @@ void GeometryEngine::initPlaneGeometry()
     // index of the second strip needs to be duplicated. If
     // connecting strips have same vertex order then only last
     // index of the first strip needs to be duplicated.
-    GLushort indices[] = {
+    GLushort indices[] = { //TODO : Trouver le bon ordre des indices
             0,  2,  5,  3,  6,  4,  7,  8,  8,      // Face 0 - triangle strip (1 5 2 6 3 7 4 8)
             9,  9, 10, 13, 11, 14, 12, 15, 16, 16 // Face 1 - triangle strip (9 13 10 14 11 15 12 16)
     };
