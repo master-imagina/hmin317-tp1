@@ -11,3 +11,6 @@ La fonction initCubeGeometry() permet de créer un tableau de vertices et un tab
 La fonction drawCubeGeometry() va lire les VBO pour pour afficher les vertices en prennant en compte la position des points des faces et la position pour les textures.
 
 
+
+Problème rencontré : Qt Creator ne fonctionnant pas il à fallu trouver le moyen d'executer le projet à l'aide de ligne de commandes.
+La commande "qmake" pour générer un makefile puis la commande make pour générer un executable.
