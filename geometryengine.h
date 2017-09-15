@@ -63,8 +63,14 @@ public:
 
     void drawCubeGeometry(QOpenGLShaderProgram *program);
 
+    void drawPlaneGeometry(QOpenGLShaderProgram *program);
+
 private:
+    int m_nomberIndices;
+
     void initCubeGeometry();
+
+    void initPlaneGeometry(int gridSize);
 
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;

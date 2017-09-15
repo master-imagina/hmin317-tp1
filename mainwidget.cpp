@@ -166,7 +166,7 @@ void MainWidget::initShaders()
 void MainWidget::initTextures()
 {
     // Load cube.png image
-    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
+    texture = new QOpenGLTexture(QImage(":/h.jpg").mirrored());
 
     // Set nearest filtering mode for texture minification
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
@@ -218,5 +218,5 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
 }
