@@ -187,10 +187,10 @@ void GeometryEngine::initPlaneGeometry()
     // is different.
 
     // -1.5        +1.5
-    // 01 02 03 04 +1.5
-    // 05 06 07 08
-    // 09 10 11 12
-    // 13 14 15 16 -1.5
+    // 00 01 02 03 +1.5
+    // 04 05 06 07
+    // 08 09 10 11
+    // 12 13 14 15 -1.5
 
     VertexData vertices[] = {
             // Vertex data for face 0
@@ -224,9 +224,10 @@ void GeometryEngine::initPlaneGeometry()
     // index of the second strip needs to be duplicated. If
     // connecting strips have same vertex order then only last
     // index of the first strip needs to be duplicated.
-    GLushort indices[] = { //TODO : Trouver le bon ordre des indices
-            0,  2,  5,  3,  6,  4,  7,  8,  8,      // Face 0 - triangle strip (1 5 2 6 3 7 4 8)
-            9,  9, 10, 13, 11, 14, 12, 15, 16, 16 // Face 1 - triangle strip (9 13 10 14 11 15 12 16)
+    GLushort indices[] = {
+            0,  4,  1,  5,  2,  6,  3,  7,  7,      // Face 0 - triangle strip (0 4 1 5 2 6 3 7)
+            4,  4,  8,  5,  9,  6, 10,  7, 11, 11,      // Face 1 - triangle strip (4 8 5 9 6 10 7 11)
+            8,  8, 12,  9, 13, 10, 14, 11, 15, 15    // Face 2 - triangle strip (8 12 9 13 10 14 11 15)
     };
 
     // Transfer vertex data to VBO 0
@@ -235,7 +236,7 @@ void GeometryEngine::initPlaneGeometry()
 
     // Transfer index data to VBO 1
     indexBuf.bind();
-    indexBuf.allocate(indices, 19 * sizeof(GLushort));
+    indexBuf.allocate(indices, 29 * sizeof(GLushort));
 }
 
 void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
