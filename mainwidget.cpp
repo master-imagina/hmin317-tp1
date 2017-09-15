@@ -218,5 +218,8 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    //geometries->drawCubeGeometry(&program);
+
+    //draw plane cube
+    geometries->drawPlaneGeometry(&program);
 }
