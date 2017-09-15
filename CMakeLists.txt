@@ -21,5 +21,8 @@ set(HEADER_FILES
 set(QT_RES
         shaders.qrc textures.qrc)
 
-add_executable(TP1 ${SOURCE_FILES} ${HEADER_FILES} ${QT_RES})
+set(SHADER_FILES
+        fshader.glsl vshader.glsl)
+
+add_executable(TP1 ${SOURCE_FILES} ${HEADER_FILES} ${QT_RES} ${SHADER_FILES})
 target_link_libraries(TP1 ${OPENGL_LIBRARIES} Qt5::Widgets ${OpenMP_CXX_FLAGS})
