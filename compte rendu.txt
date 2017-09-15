@@ -1,0 +1,20 @@
+Question 1:
+
+	->MainWidget: sert à la gestion des évènements, des textures, du temps, ...
+	->GeometryEngine: sert à la création du cube et à le dessiner
+
+	->fshader.glsl: sert à déclarer la texture à appliquer sur l'objet
+	->vshader.glsl: sert a calculer la position des sommets dans l'espace et à lui appliquer la texture
+
+Question 2:
+
+	->void	GeometryEngine::initCubeGeometry()
+		crée les faces du cube en déclarant à la mains tous les points et segments
+		et le mets dans un buffer les coordonnées des points et dans un autres les indices
+		des sommets des faces
+
+	->void	GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram	*program)
+		sert à dessiner le cube et lui applique la texture
+
+Question 3:
+
