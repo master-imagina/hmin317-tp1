@@ -73,6 +73,12 @@ MainWidget::~MainWidget()
 }
 
 //! [0]
+void MainWidget::keyPressEvent(QKeyEvent *event) {
+
+}
+void MainWidget::keyReleaseEvent(QKeyEvent *event) {
+    
+}
 void MainWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position

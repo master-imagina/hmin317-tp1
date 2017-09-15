@@ -163,7 +163,7 @@ void GeometryEngine::initPlaneGeometry()
     VertexData vertices[16 * 16];
     for (unsigned int i = 0; i < 16; i++) {
         for (unsigned int j = 0; j < 16; j++) {
-            vertices[i * 16 + j].position = QVector3D(-1.0f + ((float)i / 8), -1.0f + ((float)j / 8), 0.f);
+            vertices[i * 16 + j].position = QVector3D(-1.0f + ((float)i / 8), -1.0f + ((float)j / 8), (float)(rand() % 30) / 120);
             vertices[i * 16 + j].texCoord = QVector2D((float)i / 15, (float)j / 15);
         }
     }
