@@ -97,6 +97,7 @@ private:
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+    float frotation;
 };
 
 #endif // MAINWIDGET_H
