@@ -1,0 +1,13 @@
+Question 1 :
+
+La classe mainwidget fournit un ensemble de fonctions permettant le paramétrage des éléments openGl tel que la scène, les textures ou les évenements souris par exemple.
+
+La classe geometryengine fournit les méthodes permettant de déssiner un cube.
+
+Question 2 :
+
+La fonction initCubeGeometry() permet de créer un tableau de vertices et un tableau d'indices pour ensuite les bind au buffer pour pouvoir être déssiné plus tard. De plus il donne les position pour les texture à y mettre.
+
+La fonction drawCubeGeometry() va lire les VBO pour pour afficher les vertices en prennant en compte la position des points des faces et la position pour les textures.
+
+
