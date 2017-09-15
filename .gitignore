@@ -1,0 +1,7 @@
+# Created by .ignore support plugin (hsz.mobi)
+Supprimerait .idea/
+Supprimerait cmake-build-debug/
+Supprimerait .idea/.name
+Supprimerait .idea/hmin317-tp1.iml
+Supprimerait .idea/modules.xml
+Supprimerait .idea/workspace.xml
