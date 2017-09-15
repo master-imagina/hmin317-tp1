@@ -1,0 +1,45 @@
+
+*** These modified files were found in JOE when it aborted on Fri Sep 15 12:32:25 2017
+*** JOE was aborted because the terminal closed
+
+*** Fichier '(Sans nom)'
+/auto_home/fboucher/hmin317-tp1/.git/COMMIT_EDITMSG
+
+*** Fichier '/auto_home/fboucher/hmin317-tp1/.git/COMMIT_EDITMSG'
+Coucou
+
+# Veuillez saisir le message de validation pour vos modifications. Les lignes
+# commençant par '#' seront ignorées, et un message vide abandonne la validation.
+#
+# Validateur : fboucher <fboucher@si23.fdsetu.infra.umontpellier.fr>
+#
+# Sur la branche master
+# Votre branche est à jour avec 'origin/master'.
+#
+# Modifications qui seront validées :
+#	nouveau fichier : Makefile
+#	nouveau fichier : chess.png
+#	nouveau fichier : cube
+#	modifié :         cube.pro.user
+#	nouveau fichier : cube.pro.user.7ba3022
+#	modifié :         geometryengine.cpp
+#	nouveau fichier : geometryengine.o
+#	nouveau fichier : green.png
+#	modifié :         main.cpp
+#	nouveau fichier : main.o
+#	modifié :         mainwidget.cpp
+#	nouveau fichier : mainwidget.o
+#	nouveau fichier : moc_mainwidget.cpp
+#	nouveau fichier : moc_mainwidget.o
+#	nouveau fichier : qrc_shaders.cpp
+#	nouveau fichier : qrc_shaders.o
+#	nouveau fichier : qrc_textures.cpp
+#	nouveau fichier : qrc_textures.o
+#	modifié :         textures.qrc
+#
+
+*** Fichier '* Startup Log *'
+Processing '/etc/joe/editorrc'...
+Processing '/etc/joe/ftyperc'...
+Finished processing /etc/joe/ftyperc
+Finished processing /etc/joe/editorrc
