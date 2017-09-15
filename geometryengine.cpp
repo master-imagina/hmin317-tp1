@@ -71,6 +71,7 @@ GeometryEngine::GeometryEngine()
 
     // Initializes cube geometry and transfers it to VBOs
     initCubeGeometry();
+    initPlaneGeometry();
 }
 
 GeometryEngine::~GeometryEngine()
@@ -177,3 +178,69 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
 }
 //! [2]
+
+
+void GeometryEngine::initPlaneGeometry()
+{
+
+    VertexData vertices[16*16];
+
+    for (int i = 0; i < 15; i++)
+    {
+        for (int j = 0; j < 16; i++)
+        {
+            vertices[i*16+j] = {QVector3D(i/2,j/2,0.0f), QVector2D(0.0f, 0.0f)};
+        }
+    }
+
+    GLushort indices[15*15*2];
+
+    for (int i = 0; i < 15; i++)
+    {
+        //ajoute 1er point
+        for (int j = 0; j < 16; j++)
+        {
+            indices[i*16+j] = i;
+        }
+        //ajoute dernier
+    }
+
+//! [1]
+    // Transfer vertex data to VBO 0
+    arrayBuf.bind();
+    arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
+
+    // Transfer index data to VBO 1
+    indexBuf.bind();
+    indexBuf.allocate(indices, 34 * sizeof(GLushort));
+//! [1]
+
+}
+
+void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
+{
+
+    // Tell OpenGL which VBOs to use
+    arrayBuf.bind();
+    indexBuf.bind();
+
+    // Offset for position
+    quintptr offset = 0;
+
+    // Tell OpenGL programmable pipeline how to locate vertex position data
+    int vertexLocation = program->attributeLocation("a_position");
+    program->enableAttributeArray(vertexLocation);
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+    // Offset for texture coordinate
+    offset += sizeof(QVector3D);
+
+    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
+    int texcoordLocation = program->attributeLocation("a_texcoord");
+    program->enableAttributeArray(texcoordLocation);
+    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+    // Draw cube geometry using indices from VBO 1
+    glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
+
+}   

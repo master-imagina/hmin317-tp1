@@ -1,0 +1,11 @@
+Question 1
+
+La classe mainwidget initialize les shader texture et matrice nécessaire à opengl, elle gère les évenements de la souris ainsi que l'affichage
+
+La classe geometryengine permet de créer des formes géometriques 
+
+Question 2
+
+La méthode initCubeGeometry créer un tableau de point représentant les sommets du cube ainsi que les coordonnées de texture associées aux sommets et un tableau d'indices représentant les triangles des faces du cube chaque face à 2 triangles. Elle transmet ensuite ces 2 tableaux au vertex buffer object d'OpenGl.
+
+La méthode drawCubeGeometry récupère les données de l'index buffer et du vertex buffer puis affiche le cube sur la scène avec les coordonnées de textures
