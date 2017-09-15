@@ -5,13 +5,23 @@ TEMPLATE = app
 
 SOURCES += main.cpp
 
+INCLUDEPATH+= $$PWD/external/glm/
+
 SOURCES += \
     mainwidget.cpp \
-    geometryengine.cpp
+    geometryengine.cpp\
+    camera.cpp\
+    camerathird.cpp\
+    utils.cpp\
+    matrix.cpp
 
 HEADERS += \
     mainwidget.h \
-    geometryengine.h
+    geometryengine.h\
+    camera.h\
+    camerathird.h\
+    utils.h\
+    matrix.h
 
 RESOURCES += \
     shaders.qrc \
