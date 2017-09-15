@@ -92,9 +92,11 @@ void GeometryEngine::initPlaneGeometry()
 	GLushort indices[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 	
 	for(int i = 0;i<15;i++){
+		//ajoute le premier point de la ligne
 		for(int j = 0;j<16;j++){
 			//TODO add vertice indices 	
 		}
+		//ajoute le dernier point de la ligne
 	}
 	
 	arrayBuf.bind();
