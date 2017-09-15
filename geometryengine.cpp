@@ -92,7 +92,7 @@ void GeometryEngine::initPlaneGeometry(){
             float z=0;
             if((i > 6 && j > 6 && i < 11 && j < 11) || (i > 1 && j > 1 && i < 6 && j < 6)|| (i > 11 && j > 11 && i < 14 && j < 14))
                z= 2.2;
-            vertices[i * 16 + j] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / 16, (float)j / 16)};
+            vertices[i * 16 + j] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / rows, (float)j / rows)};
         }
     }
 
@@ -101,19 +101,19 @@ void GeometryEngine::initPlaneGeometry(){
     int i = 0;
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
-            indices[i*15*4+j*4] = i*16+j;
-            indices[i*15*4+j*4+1] = i*16+(j+1);
-            indices[i*15*4+j*4+2] = (i+1)*16+j;
+            indices[i*rows*4+j*4] = i*count+j;
+            indices[i*rows*4+j*4+1] = i*count+(j+1);
+            indices[i*rows*4+j*4+2] = (i+1)*count+j;
 
-            indices[i*15*4+j*4+3] = (i+1)*16+(j+1);
+            indices[i*rows*4+j*4+3] = (i+1)*count+(j+1);
         }
     }
 
     arrayBuf.bind();
-    arrayBuf.allocate(vertices, 16*16* sizeof(VertexData));
+    arrayBuf.allocate(vertices, count*count* sizeof(VertexData));
 
     indexBuf.bind();
-    indexBuf.allocate(indices, 15*15*4*sizeof(GLushort));
+    indexBuf.allocate(indices, rows*rows*4*sizeof(GLushort));
 }
 
 

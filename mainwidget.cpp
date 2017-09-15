@@ -181,9 +181,10 @@ void MainWidget::initializeGL()
     initializeOpenGLFunctions();
 
     glClearColor(0, 0, 0, 1);
-
     initShaders();
     initTextures();
+
+
 
     //! [2]
     // Enable depth buffer
@@ -255,6 +256,8 @@ void MainWidget::resizeGL(int w, int h)
 }
 //! [5]
 
+
+
 void MainWidget::paintGL()
 {
     // Clear color and depth buffer
@@ -279,5 +282,6 @@ void MainWidget::paintGL()
     //geometries->drawCubeGeometry(&program);
 
     geometries->drawPlaneGeometry(&program);
+
 
 }
