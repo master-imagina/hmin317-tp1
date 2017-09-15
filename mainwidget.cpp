@@ -51,8 +51,11 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
-
+#include <QKeyEvent>
 #include <math.h>
+
+#include <iostream>
+
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
@@ -60,6 +63,10 @@ MainWidget::MainWidget(QWidget *parent) :
     texture(0),
     angularSpeed(0)
 {
+    eye.posX = 0;
+    eye.posY = 0;
+    eye.posZ = -50;
+
 }
 
 MainWidget::~MainWidget()
@@ -77,6 +84,52 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
     mousePressPosition = QVector2D(e->localPos());
+}
+
+void MainWidget::keyPressEvent(QKeyEvent *event)
+{
+    QKeyEvent *c = dynamic_cast<QKeyEvent *>(event);
+    if (c && c->key() ==  Qt::Key_Z){
+        eye.forward=true;
+    }
+
+    if (c && c->key() ==  Qt::Key_Q){
+        eye.left=true;
+
+
+    }
+    if (c && c->key() ==  Qt::Key_D){
+        eye.right=true;
+
+    }
+    if (c && c->key() ==  Qt::Key_S){
+        eye.backward=true;
+
+    }
+
+}
+
+void MainWidget::keyReleaseEvent(QKeyEvent *event)
+{
+
+    QKeyEvent *c = dynamic_cast<QKeyEvent *>(event);
+    if (c && c->key() ==  Qt::Key_Z){
+        eye.forward=false;
+    }
+
+    if (c && c->key() ==  Qt::Key_Q){
+        eye.left=false;
+
+
+    }
+    if (c && c->key() ==  Qt::Key_D){
+        eye.right=false;
+
+    }
+    if (c && c->key() ==  Qt::Key_S){
+        eye.backward=false;
+
+    }
 }
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
@@ -115,6 +168,11 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
+
+    if (eye.forward) (eye.posZ += eye.speed),update();
+    if (eye.right) (eye.posX -= eye.speed),update();
+    if (eye.left) (eye.posX += eye.speed),update();
+    if (eye.backward)  (eye.posZ-= eye.speed),update();
 }
 //! [1]
 
@@ -127,13 +185,13 @@ void MainWidget::initializeGL()
     initShaders();
     initTextures();
 
-//! [2]
+    //! [2]
     // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
     glEnable(GL_CULL_FACE);
-//! [2]
+    //! [2]
 
     geometries = new GeometryEngine;
 
@@ -187,7 +245,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 1.0, zFar = 1000, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -204,20 +262,20 @@ void MainWidget::paintGL()
 
     texture->bind();
 
-//! [6]
+    //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(eye.posX, eye.posY, eye.posZ);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
     program.setUniformValue("mvp_matrix", projection * matrix);
-//! [6]
+    //! [6]
 
     // Use texture unit 0 which contains cube.png
     program.setUniformValue("texture", 0);
 
-    // Draw cube geometry    
+    // Draw cube geometry
     //geometries->drawCubeGeometry(&program);
 
     geometries->drawPlaneGeometry(&program);

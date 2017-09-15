@@ -89,14 +89,17 @@ void GeometryEngine::initPlaneGeometry(){
 
     for (int i = 0; i< count; ++i) {
         for (int j = 0; j < count; ++j) {
-            vertices[i * 16 + j] = {QVector3D(-1.0f + ((float)i / 8), -1.0f + ((float)j / 8), 0.f),QVector2D((float)i / 15, (float)j / 15)};
+            float z=0;
+            if((i > 6 && j > 6 && i < 11 && j < 11) || (i > 1 && j > 1 && i < 6 && j < 6)|| (i > 11 && j > 11 && i < 14 && j < 14))
+               z= 2.2;
+            vertices[i * 16 + j] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / 16, (float)j / 16)};
         }
     }
 
 
     GLushort indices[15*15*4];
     int i = 0;
-    for (int i = 0; i < rows - 1; ++i) {
+    for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
             indices[i*15*4+j*4] = i*16+j;
             indices[i*15*4+j*4+1] = i*16+(j+1);
