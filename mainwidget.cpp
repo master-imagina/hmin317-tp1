@@ -217,6 +217,9 @@ void MainWidget::paintGL()
     // Use texture unit 0 which contains cube.png
     program.setUniformValue("texture", 0);
 
-    // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    // Draw cube geometry    
+    //geometries->drawCubeGeometry(&program);
+
+    geometries->drawPlaneGeometry(&program);
+
 }
