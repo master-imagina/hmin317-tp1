@@ -219,4 +219,5 @@ void MainWidget::paintGL()
 
     // Draw cube geometry
     geometries->drawCubeGeometry(&program);
+//    geometries->drawPlaneGeometry(&program);
 }
