@@ -51,6 +51,7 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
+#include <iostream>
 
 #include <math.h>
 
@@ -60,6 +61,9 @@ MainWidget::MainWidget(QWidget *parent) :
     texture(0),
     angularSpeed(0)
 {
+    PositionX = 0.0;
+    PositionY = 0.0;
+    PositionZ = -5.0;
 }
 
 MainWidget::~MainWidget()
@@ -78,6 +82,36 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
     // Save mouse press position
     mousePressPosition = QVector2D(e->localPos());
 }
+
+void MainWidget::keyPressEvent(QKeyEvent *e)
+{
+    int key = e->key();
+    std::cout << key << std::endl;
+    switch (key)
+    {
+        case 90:
+            PositionX+=0.1;
+            break;
+        case 83:
+            PositionX-=0.1;
+            break;
+        case 81:
+            PositionY+=0.1;
+            break;
+        case 68:
+            PositionY-=0.1;
+            break;
+        case 65:
+            PositionZ+=0.1;
+            break;
+        case 69:
+            PositionZ-=0.1;
+            break;
+
+    }
+    update();
+}
+
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 {
@@ -132,7 +166,7 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 //! [2]
 
     geometries = new GeometryEngine;
@@ -187,7 +221,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 3.0, zFar = 30.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -207,7 +241,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(PositionX, PositionY, PositionZ);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -218,5 +252,5 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
 }

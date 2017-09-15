@@ -1,0 +1,10 @@
+Q1)
+MainWidget gère la fenêtre, le clavier, et de manière générale l'interaction utilisateur et le contexte OpenGL.
+GeometryEngine gère l'envoi des infos pour afficher le cube
+
+le fragment et le vertex shader sont de simples passthrough shaders.
+
+Q2)
+init feed les vertex au VBO, et draw envoie le VBO au GPU
+
+Q3)
