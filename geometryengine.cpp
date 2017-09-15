@@ -52,6 +52,7 @@
 
 #include <QVector2D>
 #include <QVector3D>
+#include <stdlib.h>
 
 struct VertexData
 {
@@ -70,7 +71,8 @@ GeometryEngine::GeometryEngine()
     indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
-    initCubeGeometry();
+    //initCubeGeometry();
+    initPlaneGeometry();
 }
 
 GeometryEngine::~GeometryEngine()
@@ -177,3 +179,60 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
 }
 //! [2]
+
+void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program) {
+    // Tell OpenGL which VBOs to use
+    arrayBuf.bind();
+    indexBuf.bind();
+
+    // Offset for position
+    quintptr offset = 0;
+
+    // Tell OpenGL programmable pipeline how to locate vertex position data
+    int vertexLocation = program->attributeLocation("a_position");
+    program->enableAttributeArray(vertexLocation);
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+    // Offset for texture coordinate
+    offset += sizeof(QVector3D);
+
+    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
+    int texcoordLocation = program->attributeLocation("a_texcoord");
+    program->enableAttributeArray(texcoordLocation);
+    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+    // Draw cube geometry using indices from VBO 1
+    glDrawElements(GL_TRIANGLES, (15 * 15 * 6), GL_UNSIGNED_SHORT, 0);
+}
+
+void GeometryEngine::initPlaneGeometry() {
+    VertexData vert[16*16];
+    GLushort indices[15 * 15 * 6];
+    // creation des vertices
+    int i = 0;
+    for(int y= 0; y < 16; ++y) {
+        for(int x = 0; x < 16; ++x) {
+            float r = 0.9 + static_cast <float> (rand()) /( static_cast <float> (RAND_MAX/(0.9-1.1))); // elevation random des points
+            vert[i++] = {QVector3D((x / 8.0f), (y / 8.0f), r - 1.0f), QVector2D((x / 15.0f), (y / 15.0f))};
+        }
+    }
+    //init tableau indices
+    int j = 0;
+    for(int y= 0; y < 16 - 1; ++y) {
+        for(int x = 0; x < 16 - 1; ++x) {
+            indices[j++] = (y*16) + x;
+            indices[j++] = (y*16) + x + 1;
+            indices[j++] = (y*16) + x + 16;
+            indices[j++] = (y*16) + x + 1;
+            indices[j++] = (y*16) + x + 17;
+            indices[j++] = (y*16) + x + 16;
+        }
+    }
+    // Transfer vertex data to VBO 0
+    arrayBuf.bind();
+    arrayBuf.allocate(vert, (16 * 16) * sizeof(VertexData));
+
+    // Transfer index data to VBO 1
+    indexBuf.bind();
+    indexBuf.allocate(indices, (15 * 15 * 6) * sizeof(GLushort));
+}

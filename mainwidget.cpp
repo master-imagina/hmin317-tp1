@@ -99,6 +99,11 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 }
 //! [0]
 
+void MainWidget::wheelEvent(QWheelEvent *event) {
+
+}
+
+
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
 {
@@ -132,7 +137,7 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 //! [2]
 
     geometries = new GeometryEngine;
@@ -218,5 +223,7 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    //geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
+
 }
