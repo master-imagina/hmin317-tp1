@@ -25,5 +25,39 @@
 
     \section{Question 1}
     \subsection{A quoi servent les classes MainWidget et GeometryEngine ?}
+    La classe MainWidget sert à gérer l'affichage et les évènements du programme, en effet si on se fie aux foncions présentes dans le .h :
+    \lstinputlisting[language=C++, caption=Fonctions de la classe MainWidget, firstline=75, lastline=85]{../mainwidget.h}
+    Les fonctions dans l'ordre permettent :
+    \begin{itemize}
+    	\item De gérer le clic souris
+    	\item De gérer le relachement du clic souris
+    	\item De gérer le temps (et faire un mouvement continu, comme par exemple attrapper le cube et lui inculquer un mouvement pour qu'il continue et ralentisse sur le temps)
+    	\item D'initialiser la fenêtre OpenGL
+    	\item De gérer la modification de la taille de la fenêtre
+    	\item De redessiner et mettre à jour le contenu de la fenêtre OpenGL
+    	\item D'initialiser les shaders
+    	\item D'initialiser les textures (donc les charger et de les préparer pour les utiliser plus tard)
+    \end{itemize}   
+    \hfill \break
+	La classe GeometryEngine est utilisée pour la géométrie du dé présent :
+    \lstinputlisting[language=C++, caption=Fonctions de la classe GeometryEngine, firstline=64, lastline=67]{../geometryengine.h}
+    Les fonctions présentes servent à dessiner et à initialiser le cube qui, une fois texturé, sera le dé à la fenêtre.
 
+    \pagebreak
+    \subsection{A quoi servent les fichiers fshader.glsl et vshader.glsl ?}
+    Les fichiers sont dans l'ordre le {\it{fragment shader}} et le {\it{vertex shader}}. Le fragment shader va servir à appliquer la bonne couleur au pixel (en se basant sur la texture fournie), tandis que le vertex shader va calculer la position des vertices par rapport à la fenêtre.
+	
+	\pagebreak
+	\section{Question 2}
+	\subsection{Expliquer le fonctionnement des deux fonctions de la classe CubeGeometry.}
+	    La fonction {\lstinline{void initCubeGeometry()}} permet d'initialiser le cube en créant dans un premier temps les vertices du cube :
+    \lstinputlisting[language=C++, firstline=85, lastline=99, caption=Création de deux faces du cube]{../geometryengine.cpp}
+    Pour ensuite dans un second temps, recenser les indices pour faire les triangles des faces des cubes :
+    \lstinputlisting[language=C++, firstline=126, lastline=140, caption=Création des indices]{../geometryengine.cpp}
+    Et pour terminer, on transfère les données au GPU via des buffers :
+    \lstinputlisting[language=C++, firstline=143, lastline=149, caption=Transfert des données via un VBO]{../geometryengine.cpp}
+    Une fois terminé, la fonction {\lstinline{void drawCubeGeometry(QOpenGLShaderProgram *program)}} doit être utilisée pour dessiner le cube.\hfill \break
+    Dans un premier temps, on va indiquer à OpenGL quels VBO ({\it{vertex shaders}}) utiliser :
+    \lstinputlisting[language=C++, firstline=156, lastline=158, caption=Selection des VBO]{../geometryengine.cpp}
+	
 \end{document}
