@@ -96,6 +96,7 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 
     // Increase angular speed
     angularSpeed += acc;
+
 }
 //! [0]
 
@@ -132,7 +133,7 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+ //   glEnable(GL_CULL_FACE);
 //! [2]
 
     geometries = new GeometryEngine;
