@@ -56,8 +56,21 @@
     \lstinputlisting[language=C++, firstline=126, lastline=140, caption=Création des indices]{../geometryengine.cpp}
     Et pour terminer, on transfère les données au GPU via des buffers :
     \lstinputlisting[language=C++, firstline=143, lastline=149, caption=Transfert des données via un VBO]{../geometryengine.cpp}
-    Une fois terminé, la fonction {\lstinline{void drawCubeGeometry(QOpenGLShaderProgram *program)}} doit être utilisée pour dessiner le cube.\hfill \break
+    Une fois terminé, la fonction {\lstinline{void drawCubeGeometry(QOpenGLShaderProgram *program)}} doit être utilisée pour dessiner le cube.\\ \\*
     Dans un premier temps, on va indiquer à OpenGL quels VBO ({\it{vertex shaders}}) utiliser :
     \lstinputlisting[language=C++, firstline=156, lastline=158, caption=Selection des VBO]{../geometryengine.cpp}
+    Ensuite, on indique au pointeur le début du VBO, puis le lieu des données :
+    \lstinputlisting[language=C++, firstline=160, lastline=166, caption=Indication aux vshader des données]{../geometryengine.cpp}
+    \pagebreak
+    
+    Ensuite, on indique où se trouve les coordonnées pour les textures dans la mémoire, puis on la donne au buffer :
+    \lstinputlisting[language=C++, firstline=168, lastline=174, caption=Indication des coordonnées de texture]{../geometryengine.cpp}
+    
+    Et pour finir, on dessine le cube.
+    \lstinputlisting[language=C++, firstline=176, lastline=177, caption=Dessin du cube]{../geometryengine.cpp}
 	
+	\pagebreak
+	\section{Question 3}
+	\subsection{Création d'une surface plane}
+    	
 \end{document}
