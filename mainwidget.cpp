@@ -51,8 +51,10 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
+#include <iostream>
 
 #include <math.h>
+
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
@@ -60,6 +62,12 @@ MainWidget::MainWidget(QWidget *parent) :
     texture(0),
     angularSpeed(0)
 {
+    this->setFocusPolicy(Qt::ClickFocus);
+    this->setMouseTracking(true);
+    mouseHaveBeenPress = false;
+    time = new QTimer;
+    connect(time,SIGNAL(timeout()),this,SLOT(update()));
+    time->start(16);
 }
 
 MainWidget::~MainWidget()
@@ -77,12 +85,14 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
     mousePressPosition = QVector2D(e->localPos());
+
+    mouseHaveBeenPress = true;
 }
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     // Mouse release position - mouse press position
-    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    /*QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
 
     // Rotation axis is perpendicular to the mouse position difference
     // vector
@@ -95,7 +105,43 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
 
     // Increase angular speed
-    angularSpeed += acc;
+    angularSpeed += acc;*/
+
+    mouseHaveBeenPress = false;
+}
+
+void MainWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    float dx = (event->x()-anchor.x());
+    float dy = (event->y()-anchor.y());
+    if(mouseHaveBeenPress)
+        camera.move(dx,dy,0,0,0,0,0);
+    anchor = event->pos();
+}
+
+void MainWidget::wheelEvent(QWheelEvent *event)
+{
+    camera.move(0,0,event->delta()/120,0,0,0,0);
+}
+
+void MainWidget::keyPressEvent(QKeyEvent *event)
+{
+    int z=0,s=0,q=0,d=0;
+
+    if(event->text() == "z"){
+        z=1;
+    }
+    if(event->text() == "s"){
+        s=1;
+    }
+    if(event->text() == "q"){
+        q=1;
+    }
+    if(event->text() == "d"){
+        d=1;
+    }
+
+    camera.move(0,0,0,z,s,q,d);
 }
 //! [0]
 
@@ -115,6 +161,7 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
+
 }
 //! [1]
 
@@ -126,19 +173,28 @@ void MainWidget::initializeGL()
 
     initShaders();
     initTextures();
-
+    camera.move(0,0,0,0,0,0,0);
 //! [2]
     // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+
 //! [2]
 
     geometries = new GeometryEngine;
+    qreal aspect = qreal(this->size().width()) / qreal(this->size().height());
+
+    // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
+    const qreal zNear = 0.1, zFar = 1000.0, fov = 45.0;
+
+    QMatrix4x4 projection;
+    projection.perspective(fov, aspect, zNear, zFar);
+    camera.setProjectionMatrix(projection);
 
     // Use QBasicTimer because its faster than QTimer
-    timer.start(12, this);
+
+
 }
 
 //! [3]
@@ -187,18 +243,20 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 0.1, zFar = 1000.0, fov = 45.0;
 
-    // Reset projection
-    projection.setToIdentity();
 
-    // Set perspective projection
+
+    QMatrix4x4 projection;
     projection.perspective(fov, aspect, zNear, zFar);
+    camera.setProjectionMatrix(projection);
 }
 //! [5]
 
 void MainWidget::paintGL()
 {
+    this->makeCurrent();
+
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -207,11 +265,10 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
-    matrix.rotate(rotation);
+    matrix.translate(0.0, 0.0, 0.0);
 
     // Set modelview-projection matrix
-    program.setUniformValue("mvp_matrix", projection * matrix);
+    program.setUniformValue("mvp_matrix", camera.getProjectionMatrix()*camera.getViewMatrix()  );
 //! [6]
 
     // Use texture unit 0 which contains cube.png

@@ -37,10 +37,10 @@ float Camera::getFAR_PLANE(){
   return FAR_PLANE;
 }
 
-void Camera::setProjectionMatrix(glm::mat4 projectionMatrix){
+void Camera::setProjectionMatrix(QMatrix4x4 projectionMatrix){
     this->projectionMatrix = projectionMatrix;
 }
 
-glm::mat4 Camera::getProjectionMatrix(){
+QMatrix4x4 Camera::getProjectionMatrix(){
     return projectionMatrix;
 }

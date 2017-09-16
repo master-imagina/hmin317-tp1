@@ -11,7 +11,7 @@ public:
     CameraThird();
     void move(float dx, float dy , int dw, int z, int s, int q, int d);
 
-    glm::mat4 getViewMatrix();
+    QMatrix4x4 getViewMatrix();
 
 private:
     glm::vec3 lookAt;
@@ -20,11 +20,10 @@ private:
     float angleAroundPivot;
 
 
-    glm::mat4 viewMatrix;
+    QMatrix4x4 viewMatrix;
     void calculateCameraPosition(float hD, float vD);
     float calculateHorizontal();
     float calculateVertical();
-    float toRadians(float degree);
 };
 
 #endif // CAMERATHIRD_H

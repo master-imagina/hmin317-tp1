@@ -61,6 +61,8 @@
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include "camerathird.h"
+#include <QTimer>
 
 class GeometryEngine;
 
@@ -75,6 +77,9 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent ( QWheelEvent * event );
+    void keyPressEvent(QKeyEvent* event);
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
@@ -84,19 +89,24 @@ protected:
     void initShaders();
     void initTextures();
 
+public slots:
+
+
 private:
     QBasicTimer timer;
+    QTimer * time;
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
 
     QOpenGLTexture *texture;
+    bool mouseHaveBeenPress;
 
-    QMatrix4x4 projection;
-
+    QPoint anchor;
     QVector2D mousePressPosition;
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+    CameraThird camera;
 };
 
 #endif // MAINWIDGET_H

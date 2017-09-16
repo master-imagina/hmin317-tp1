@@ -12,16 +12,14 @@ SOURCES += \
     geometryengine.cpp\
     camera.cpp\
     camerathird.cpp\
-    utils.cpp\
-    matrix.cpp
+    utils.cpp
 
 HEADERS += \
     mainwidget.h \
     geometryengine.h\
     camera.h\
     camerathird.h\
-    utils.h\
-    matrix.h
+    utils.h
 
 RESOURCES += \
     shaders.qrc \

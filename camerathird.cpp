@@ -1,29 +1,25 @@
 #include "camerathird.h"
 #include <iostream>
+#define _USE_MATH_DEFINES
 #include <math.h>
-#include "matrix.h"
 
 CameraThird::CameraThird(float distanceFromPivot){
     this->distanceFromPivot = distanceFromPivot,
-    position.x=0;position.y=0;position.z=0;
+    position.x=0;position.y=1;position.z=5;
     lookAt.x=0;lookAt.y=0;lookAt.z=0;
-    pitch=1;
-    angleAroundPivot=0;
-    FOV = 40;
-    NEAR_PLANE = 0.1f;
-    FAR_PLANE = 8000;
+    pitch=20;
+    angleAroundPivot=180;
+
 }
 
 CameraThird::CameraThird()
 {
-    position.x=0;position.y=0;position.z=0;
+    position.x=0;position.y=1;position.z=5;
     lookAt.x=0;lookAt.y=0;lookAt.z=0;
     pitch=1;
     angleAroundPivot=0;
     distanceFromPivot=10;
-    FOV = 40;
-    NEAR_PLANE = 0.1f;
-    FAR_PLANE = 8000;
+
 }
 
 
@@ -36,7 +32,7 @@ void CameraThird::move(float dx, float dy, int dw, int z, int s, int q, int d){
 
 
     float pitchChange = dy * 0.3f;
-    //if(pitch - pitchChange >0 && pitch - pitchChange <85)
+    if(pitch - pitchChange >0 && pitch - pitchChange <90)
         pitch -= pitchChange;
     float angleChange = dx * 0.3f;
     angleAroundPivot -= angleChange;
@@ -45,28 +41,28 @@ void CameraThird::move(float dx, float dy, int dw, int z, int s, int q, int d){
 
     if(z){
 
-        lookAt.z += 1.5f * cos(toRadians(angleAroundPivot));
+        lookAt.z += 1.5f * cos(Utils::toRadians(angleAroundPivot));
 
-        lookAt.x += 1.5f * sin(toRadians(angleAroundPivot));
+        lookAt.x += 1.5f * sin(Utils::toRadians(angleAroundPivot));
 
     }
-    else if(s){
+    if(s){
 
-        lookAt.z -= 1.5f * cos(toRadians(angleAroundPivot));
+        lookAt.z -= 1.5f * cos(Utils::toRadians(angleAroundPivot));
 
-        lookAt.x -= 1.5f * sin(toRadians(angleAroundPivot));
+        lookAt.x -= 1.5f * sin(Utils::toRadians(angleAroundPivot));
     }
-    else if(q){
+    if(q){
 
-        lookAt.z -= 1.5f * sin(toRadians(angleAroundPivot));
+        lookAt.z -= 1.5f * sin(Utils::toRadians(angleAroundPivot));
 
-        lookAt.x += 1.5f * cos(toRadians(angleAroundPivot));
+        lookAt.x += 1.5f * cos(Utils::toRadians(angleAroundPivot));
     }
-    else if(d){
+    if(d){
 
-        lookAt.z += 1.5f * sin(toRadians(angleAroundPivot));
+        lookAt.z += 1.5f * sin(Utils::toRadians(angleAroundPivot));
 
-        lookAt.x -= 1.5f * cos(toRadians(angleAroundPivot));
+        lookAt.x -= 1.5f * cos(Utils::toRadians(angleAroundPivot));
 
     }
 
@@ -77,33 +73,30 @@ void CameraThird::move(float dx, float dy, int dw, int z, int s, int q, int d){
     yaw = 180 - angleAroundPivot;
 }
 
+/*
+ * Simply Use Sinus law to calculate the camera position
+ * Shift the lookAt position
+ */
 void CameraThird::calculateCameraPosition(float hD, float vD){
-    float offsetX = (float) (hD * sin(toRadians(angleAroundPivot)));
-    float offsetZ = (float) (hD * cos(toRadians(angleAroundPivot)));
+    float offsetX = (float) (hD * sin(Utils::toRadians(angleAroundPivot)));
+    float offsetZ = (float) (hD * cos(Utils::toRadians(angleAroundPivot)));
     position.x = lookAt.x - offsetX;
     position.y = lookAt.y + vD;
     position.z = lookAt.z - offsetZ;
 }
 
 float CameraThird::calculateHorizontal(){
-    return (float) (distanceFromPivot * cos(toRadians(pitch)));
+    return (float) (distanceFromPivot * cos(Utils::toRadians(pitch)));
 }
 
 float CameraThird::calculateVertical(){
-    return (float) (distanceFromPivot * sin(toRadians(pitch)));
+    return (float) (distanceFromPivot * sin(Utils::toRadians(pitch)));
 }
 
-float CameraThird::toRadians(float degree)
-{
-    return degree/180.0*M_PI;
-}
+QMatrix4x4 CameraThird::getViewMatrix(){
+    viewMatrix.setToIdentity();
+    viewMatrix.lookAt(QVector3D(position.x,position.y,position.z),QVector3D(lookAt.x,lookAt.y,lookAt.z),QVector3D(0,1,0));
 
-glm::mat4 CameraThird::getViewMatrix(){
-    viewMatrix = Matrix::createViewMatrix(*this);
-    return viewMatrix;/* glm::lookAt(
-                glm::vec3(position.x,position.y,position.z), // La caméra est à (4,3,3), dans l'espace monde
-                glm::vec3(lookAt.x,lookAt.y,lookAt.z), // et regarde l'origine
-                glm::vec3(0,1,0)  // La tête est vers le haut (utilisez 0,-1,0 pour regarder à l'envers)
-            );*/
+    return viewMatrix;
 }
 

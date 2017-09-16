@@ -71,7 +71,7 @@ GeometryEngine::GeometryEngine()
     indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
-    initPlaneGeometry(16);
+    initPlaneGeometry(128);
 }
 
 GeometryEngine::~GeometryEngine()
@@ -157,8 +157,7 @@ void GeometryEngine::initPlaneGeometry(int gridSize)
     float step = 1.f / (gridSize-1);
     for(int i=0;i<gridSize;i++){
         for(int j=0;j<gridSize;j++){
-            vertices.push_back({QVector3D((float)(i*step),float(j*step),0.f)*4.0,QVector2D((float)(i*step),float(j*step))});
-            std::cout <<"n°" << i + j*gridSize << ": " <<(float)(i*step) << " " << (float)(j*step) << std::endl;
+            vertices.push_back({QVector3D((float)(i*step),0.f,float(j*step))*20.0,QVector2D((float)(i*step),float(j*step))});
         }
     }
 
@@ -169,7 +168,7 @@ void GeometryEngine::initPlaneGeometry(int gridSize)
             int topright = topleft + 1;
             int bottomleft = i + (j+1)*gridSize;
             int bottomright = bottomleft+1;
-            std::cout <<topleft << " " << topright << " " << bottomleft << " " <<  bottomright << std::endl;
+
 
             indices.push_back(topleft);
             indices.push_back(bottomright);
@@ -189,7 +188,7 @@ void GeometryEngine::initPlaneGeometry(int gridSize)
 
     m_nomberIndices = indices.size();
 
-    std::cout <<vertices.size() << " " << indices.size() << std::endl;
+
     // Transfer index data to VBO 1
     indexBuf.bind();
     indexBuf.allocate(&indices[0], indices.size() * sizeof(GLushort));

@@ -19,7 +19,7 @@ varying vec2 v_texcoord;
 void main()
 {
     // Calculate vertex position in screen space
-    vec4 computePosition = vec4(a_position.x,a_position.y,texture2D(texture, a_texcoord).r,1.0);
+    vec4 computePosition = vec4(a_position.x,texture2D(texture, a_texcoord).r,a_position.z,1.0);
     gl_Position = mvp_matrix * computePosition;
 
     // Pass texture coordinate to fragment shader
