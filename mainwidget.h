@@ -99,6 +99,10 @@ private:
     GeometryEngine *geometries;
 
     QOpenGLTexture *texture;
+    QOpenGLTexture *sand;
+    QOpenGLTexture *cliff;
+    QOpenGLTexture *grass;
+    QOpenGLTexture *rock;
     bool mouseHaveBeenPress;
 
     QPoint anchor;

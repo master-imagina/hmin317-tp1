@@ -60,6 +60,10 @@ MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
+    sand(0),
+    cliff(0),
+    grass(0),
+    rock(0),
     angularSpeed(0)
 {
     this->setFocusPolicy(Qt::ClickFocus);
@@ -76,6 +80,10 @@ MainWidget::~MainWidget()
     // and the buffers.
     makeCurrent();
     delete texture;
+    delete sand;
+    delete cliff;
+    delete grass;
+    delete rock;
     delete geometries;
     doneCurrent();
 }
@@ -221,11 +229,11 @@ void MainWidget::initShaders()
 //! [4]
 void MainWidget::initTextures()
 {
-    // Load cube.png image
-    texture = new QOpenGLTexture(QImage(":/h.jpg").mirrored());
+
+    texture = new QOpenGLTexture(QImage(":/heightMap.png").mirrored());
 
     // Set nearest filtering mode for texture minification
-    texture->setMinificationFilter(QOpenGLTexture::Nearest);
+    texture->setMinificationFilter(QOpenGLTexture::Linear);
 
     // Set bilinear filtering mode for texture magnification
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
@@ -233,6 +241,58 @@ void MainWidget::initTextures()
     // Wrap texture coordinates by repeating
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     texture->setWrapMode(QOpenGLTexture::Repeat);
+
+
+    sand = new QOpenGLTexture(QImage(":/sand.png").mirrored());
+
+    // Set nearest filtering mode for texture minification
+    sand->setMinificationFilter(QOpenGLTexture::Linear);
+
+    // Set bilinear filtering mode for texture magnification
+    sand->setMagnificationFilter(QOpenGLTexture::Linear);
+
+    // Wrap texture coordinates by repeating
+    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
+    sand->setWrapMode(QOpenGLTexture::Repeat);
+
+
+    rock = new QOpenGLTexture(QImage(":/rock.png").mirrored());
+
+    // Set nearest filtering mode for texture minification
+    rock->setMinificationFilter(QOpenGLTexture::Linear);
+
+    // Set bilinear filtering mode for texture magnification
+    rock->setMagnificationFilter(QOpenGLTexture::Linear);
+
+    // Wrap texture coordinates by repeating
+    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
+    rock->setWrapMode(QOpenGLTexture::Repeat);
+
+
+
+    cliff = new QOpenGLTexture(QImage(":/cliff.png").mirrored());
+
+    // Set nearest filtering mode for texture minification
+    cliff->setMinificationFilter(QOpenGLTexture::Linear);
+
+    // Set bilinear filtering mode for texture magnification
+    cliff->setMagnificationFilter(QOpenGLTexture::Linear);
+
+    // Wrap texture coordinates by repeating
+    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
+    cliff->setWrapMode(QOpenGLTexture::Repeat);
+
+    grass = new QOpenGLTexture(QImage(":/grass.png").mirrored());
+
+    // Set nearest filtering mode for texture minification
+    grass->setMinificationFilter(QOpenGLTexture::Linear);
+
+    // Set bilinear filtering mode for texture magnification
+    grass->setMagnificationFilter(QOpenGLTexture::Linear);
+
+    // Wrap texture coordinates by repeating
+    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
+    grass->setWrapMode(QOpenGLTexture::Repeat);
 }
 //! [4]
 
@@ -260,7 +320,11 @@ void MainWidget::paintGL()
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    texture->bind();
+    texture->bind(0);
+    sand->bind(1);
+    grass->bind(2);
+    cliff->bind(3);
+    rock->bind(4);
 
 //! [6]
     // Calculate model view transformation
@@ -273,6 +337,10 @@ void MainWidget::paintGL()
 
     // Use texture unit 0 which contains cube.png
     program.setUniformValue("texture", 0);
+    program.setUniformValue("grass", 2);
+    program.setUniformValue("sand", 1);
+    program.setUniformValue("rock", 4);
+    program.setUniformValue("cliff",3);
 
     // Draw cube geometry
     geometries->drawPlaneGeometry(&program);

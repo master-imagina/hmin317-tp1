@@ -71,7 +71,7 @@ private:
     void initCubeGeometry();
 
     void initPlaneGeometry(int gridSize);
-
+    int m_quantityVertices;
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
 };

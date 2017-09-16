@@ -2,5 +2,10 @@
     <qresource prefix="/">
         <file>cube.png</file>
         <file>h.jpg</file>
+        <file>cliff.png</file>
+        <file>grass.png</file>
+        <file>rock.png</file>
+        <file>sand.png</file>
+        <file>heightMap.png</file>
     </qresource>
 </RCC>

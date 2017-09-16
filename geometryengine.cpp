@@ -71,7 +71,8 @@ GeometryEngine::GeometryEngine()
     indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
-    initPlaneGeometry(128);
+    m_quantityVertices = 256;
+    initPlaneGeometry(m_quantityVertices);
 }
 
 GeometryEngine::~GeometryEngine()
@@ -154,10 +155,10 @@ void GeometryEngine::initCubeGeometry()
 void GeometryEngine::initPlaneGeometry(int gridSize)
 {
     std::vector<VertexData> vertices;
-    float step = 1.f / (gridSize-1);
+    double step = 1.f / (gridSize-1);
     for(int i=0;i<gridSize;i++){
         for(int j=0;j<gridSize;j++){
-            vertices.push_back({QVector3D((float)(i*step),0.f,float(j*step))*20.0,QVector2D((float)(i*step),float(j*step))});
+            vertices.push_back({QVector3D((double)(i*step),0.f,double(j*step))*200.0,QVector2D((float)(i*step),float(j*step))});
         }
     }
 
@@ -181,8 +182,9 @@ void GeometryEngine::initPlaneGeometry(int gridSize)
     }
 
 
-
-
+    int value;
+    glGetIntegerv(GL_MAX_ELEMENTS_VERTICES, &value);
+    std::cout << value << " " << vertices.size() * sizeof(VertexData) << " Is too big? " << ((value<vertices.size() * sizeof(VertexData))?"true":"false")  << std::endl;
     arrayBuf.bind();
     arrayBuf.allocate(&vertices[0], vertices.size() * sizeof(VertexData));
 
@@ -242,7 +244,7 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
      int texcoordLocation = program->attributeLocation("a_texcoord");
     program->enableAttributeArray(texcoordLocation);
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
-
+    program->setUniformValue("quantityVertices", (float)m_quantityVertices);
     // Draw cube geometry using indices from VBO 1
     glDrawElements(GL_TRIANGLES, m_nomberIndices, GL_UNSIGNED_SHORT, 0);
 }
