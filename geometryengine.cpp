@@ -59,7 +59,6 @@ struct VertexData
     QVector2D texCoord;
 };
 
-//! [0]
 GeometryEngine::GeometryEngine()
     : indexBuf(QOpenGLBuffer::IndexBuffer)
 {
@@ -78,7 +77,6 @@ GeometryEngine::~GeometryEngine()
     arrayBuf.destroy();
     indexBuf.destroy();
 }
-//! [0]
 
 void GeometryEngine::initCubeGeometry()
 {
@@ -235,7 +233,7 @@ void GeometryEngine::initPlaneGeometry()
         20, 20, 21, 22, 23      // Face 5 - triangle strip (v20, v21, v22, v23)
     };
 
-//! [1]
+
     // Transfer vertex data to VBO 0
     arrayBuf.bind();
     arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
@@ -243,10 +241,10 @@ void GeometryEngine::initPlaneGeometry()
     // Transfer index data to VBO 1
     indexBuf.bind();
     indexBuf.allocate(indices, 34 * sizeof(GLushort));
-//! [1]
+
 }
 
-//! [2]
+
 void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
 {
     // Tell OpenGL which VBOs to use
@@ -272,4 +270,3 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
     // Draw cube geometry using indices from VBO 1
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
 }
-//! [2]
