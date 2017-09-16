@@ -1,10 +1,21 @@
-Q1)
-MainWidget gère la fenêtre, le clavier, et de manière générale l'interaction utilisateur et le contexte OpenGL.
-GeometryEngine gère l'envoi des infos pour afficher le cube
+﻿==== Question 1 ====
 
-le fragment et le vertex shader sont de simples passthrough shaders.
+MainWidget regroupe l'ensemble des fonctions permettant à Qt et OpenGL de paramétrer la fenêtre, les interactions utilisateurs, et l'environement OpenGL.
 
-Q2)
-init feed les vertex au VBO, et draw envoie le VBO au GPU
+GeometryEngine gère l'envoi des informations au Vertex Buffers, et permet l'affichage de la scène.
 
-Q3)
+Les Fragment et Vertex Shaders fournis sont les fichiers de base pour un simple passthrough. En commentaire j'ai bidouillé un shader "Vieux Moniteur TV". Attention au maux de têtes!
+
+==== Question 2 ====
+
+La fonction init envoie les différentes positions des vertex ainsi que les IDs de ces à utiliser lors du rendu de la scène.
+
+La fonction draw récupère ces données, les envoies au contexte OpenGL, et OpenGL se charge de l'affichage.
+
+==== Question 3 & 4 ====
+
+Voir code. Déplacements avec "ZQSD" et "AE" pour régler la hauteur.
+
+==== Bonus ====
+
+Peut être plus tard!
