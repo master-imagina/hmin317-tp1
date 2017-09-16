@@ -6,7 +6,8 @@
 ## Indications
 
 16/09 : Le projet compile sur les machines de la FAC ainsi que sur ma machine personnelle.
+16/90 : Le projet est complet, avec toute les features attendues.
 
 ## TODO
 
-Nettoyer le code et refactorer les fonctions de bases pour plus de maniabilité.
+Finir le compte rendu.
