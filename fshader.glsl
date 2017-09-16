@@ -13,7 +13,7 @@ varying vec4 v_position;
 void main()
 {
     // Set fragment color from texture
-    vec4 _red = vec4(0.8,0.2,0.2,1.0);
+    /*vec4 _red = vec4(0.8,0.2,0.2,1.0);
     vec4 _green = vec4(0.2,0.8,0.2,1.0);
     vec4 _blue = vec4(0.2,0.2,0.8,1.0);
     vec4 _gray = vec4(0.8,0.8,0.8,1.0);
@@ -27,6 +27,6 @@ void main()
     else if  (mod(p1,9.0)<= 2.0) gl_FragColor = texture2D(texture, v_texcoord)*_red;
     else if  (mod(p1,9.0)<= 6.0) gl_FragColor = texture2D(texture, v_texcoord)*_green;
     else gl_FragColor = texture2D(texture, v_texcoord)*_blue;
-  
-    	
+    */
+    gl_FragColor = texture2D(texture, v_texcoord);
 }

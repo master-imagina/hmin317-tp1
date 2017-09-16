@@ -121,13 +121,6 @@ void GeometryEngine::initCubeGeometry()
         {QVector3D( 1.0f,  1.0f, -1.0f), QVector2D(0.66f, 1.0f)}  // v23
     };
 
-    // Indices for drawing cube faces using triangle strips.
-    // Triangle strips can be connected by duplicating indices
-    // between the strips. If connecting strips have opposite
-    // vertex order then last index of the first strip and first
-    // index of the second strip needs to be duplicated. If
-    // connecting strips have same vertex order then only last
-    // index of the first strip needs to be duplicated.
     GLushort indices[] = {
          0,  1,  2,  3,  3,     // Face 0 - triangle strip ( v0,  v1,  v2,  v3)
          4,  4,  5,  6,  7,  7, // Face 1 - triangle strip ( v4,  v5,  v6,  v7)
@@ -137,7 +130,6 @@ void GeometryEngine::initCubeGeometry()
         20, 20, 21, 22, 23      // Face 5 - triangle strip (v20, v21, v22, v23)
     };
 
-//! [1]
     // Transfer vertex data to VBO 0
     arrayBuf.bind();
     arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
@@ -145,10 +137,8 @@ void GeometryEngine::initCubeGeometry()
     // Transfer index data to VBO 1
     indexBuf.bind();
     indexBuf.allocate(indices, 34 * sizeof(GLushort));
-//! [1]
 }
 
-//! [2]
 void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
 {
     // Tell OpenGL which VBOs to use
@@ -174,8 +164,6 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     // Draw cube geometry using indices from VBO 1
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
 }
-//! [2]
-
 
 void GeometryEngine::initPlaneGeometry()
 {
@@ -217,13 +205,6 @@ void GeometryEngine::initPlaneGeometry()
         {QVector3D(i[5]+1, j[5]+1, -0.0f), QVector2D(0.66f, 1.0f)},  // v23
     };
 
-    // Indices for drawing cube faces using triangle strips.
-    // Triangle strips can be connected by duplicating indices
-    // between the strips. If connecting strips have opposite
-    // vertex order then last index of the first strip and first
-    // index of the second strip needs to be duplicated. If
-    // connecting strips have same vertex order then only last
-    // index of the first strip needs to be duplicated.
     GLushort indices[] = {
          0,  1,  2,  3,  3,     // Face 0 - triangle strip ( v0,  v1,  v2,  v3)
          4,  4,  5,  6,  7,  7, // Face 1 - triangle strip ( v4,  v5,  v6,  v7)
