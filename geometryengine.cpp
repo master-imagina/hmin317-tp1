@@ -52,11 +52,14 @@
 
 #include <QVector2D>
 #include <QVector3D>
+#include <math.h>
 #include <iostream>
 struct VertexData
 {
     QVector3D position;
     QVector2D texCoord;
+    QVector3D normal;
+
 };
 
 //! [0]
@@ -78,42 +81,62 @@ GeometryEngine::~GeometryEngine()
 {
     arrayBuf.destroy();
     indexBuf.destroy();
+
 }
 //! [0]
 
 void GeometryEngine::initPlaneGeometry(){
     int count = 16;
-    int rows = 15;
-    int columns = 15;
+    int height = 16;
+    int width = 16;
     VertexData vertices[count*count];
+    QVector3D normal[count*count];
+
+    int cpt = 0;
 
     for (int i = 0; i< count; ++i) {
         for (int j = 0; j < count; ++j) {
             float z=0;
-            if((i > 6 && j > 6 && i < 11 && j < 11) || (i > 1 && j > 1 && i < 6 && j < 6)|| (i > 11 && j > 11 && i < 14 && j < 14))
-               z= 2.2;
-            vertices[i * 16 + j] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / rows, (float)j / rows)};
+            int centerX = 8,centerY=8;
+            int  thetaX = 2, thetaY =2.5;
+            float amplitude = 4;
+            z = amplitude * exp(-((0.7*(i-centerX)*(i-centerX))/(2*thetaX*thetaX) + 0.7*(j-centerY)*(j-centerY)/(2*thetaY*thetaY)));
+
+            vertices[cpt++] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / 15, (float)j / 15),QVector3D(-7.0f + ((float)i),-7.0f + ((float)j), z)};
+
         }
     }
 
+    int size = (2*width)*(height-1) + 2*(height-2);
+    std::cout << size << std::endl;
 
-    GLushort indices[15*15*4];
-    int i = 0;
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < columns; ++j) {
-            indices[i*rows*4+j*4] = i*count+j;
-            indices[i*rows*4+j*4+1] = i*count+(j+1);
-            indices[i*rows*4+j*4+2] = (i+1)*count+j;
-
-            indices[i*rows*4+j*4+3] = (i+1)*count+(j+1);
+    GLushort indices[size];
+    int offset = 0;
+    int i,j;
+    for (j = 0; j < height-1; ++j) {
+        if(j > 0 && j < height-1)
+            indices[offset++] = j*count;
+        for (i = 0; i < width; ++i) {
+            indices[offset++] = j*count+i;
+            indices[offset++] = (j+1)*count+i;
         }
+        if(j < height - 1)
+            indices[offset++] = (j+1)*count+(i-1);
     }
+
+    std::cout << offset << std::endl;
+    for(i = 500; i < 508; ++i)
+        std::cout << indices[i] << ", ";
+    std::cout <<  std::endl;
+
 
     arrayBuf.bind();
     arrayBuf.allocate(vertices, count*count* sizeof(VertexData));
 
     indexBuf.bind();
-    indexBuf.allocate(indices, rows*rows*4*sizeof(GLushort));
+    indexBuf.allocate(indices, (offset)*sizeof(GLushort));
+
+
 }
 
 
@@ -222,7 +245,6 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
 
 void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram	*program){
 
-    glDisable(GL_CULL_FACE);
     // Tell OpenGL which VBOs to use
     arrayBuf.bind();
     indexBuf.bind();
@@ -243,7 +265,13 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram	*program){
     program->enableAttributeArray(texcoordLocation);
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
+    offset += sizeof(QVector2D);
+    int normal = program->attributeLocation("normal");
+    program->enableAttributeArray(normal);
+    program->setAttributeBuffer(normal, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLE_STRIP, 15*15*4, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLE_STRIP, (508)*sizeof(GLushort), GL_UNSIGNED_SHORT, 0);
 
 }

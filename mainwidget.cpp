@@ -191,7 +191,7 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
     //! [2]
 
     geometries = new GeometryEngine;
@@ -277,6 +277,9 @@ void MainWidget::paintGL()
 
     // Use texture unit 0 which contains cube.png
     program.setUniformValue("texture", 0);
+    program.setUniformValue("light_position", QVector4D(0.0, 8.0, 8.0, 1.0));
+
+    program.setUniformValue("ambiant_color", QVector4D(0.5, 0.1, 0.1, 1.0));
 
     // Draw cube geometry
     //geometries->drawCubeGeometry(&program);
