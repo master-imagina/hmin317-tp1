@@ -54,6 +54,8 @@
 #include <QVector3D>
 #include <math.h>
 #include <iostream>
+#include <algorithm>
+
 struct VertexData
 {
     QVector3D position;
@@ -96,13 +98,23 @@ void GeometryEngine::initPlaneGeometry(){
 
     for (int i = 0; i< count; ++i) {
         for (int j = 0; j < count; ++j) {
-            float z=0;
-            int centerX = 8,centerY=8;
-            int  thetaX = 2, thetaY =2.5;
+            float z1=0, z2=0,z3=0,z=0;
+            int centerX1 = 13,centerY1=0;
+            int centerX2 = 15,centerY2=15;
+            int centerX3 = 2,centerY3=2;
+            int  thetaX = 4, thetaY =4;
             float amplitude = 4;
-            z = amplitude * exp(-((0.7*(i-centerX)*(i-centerX))/(2*thetaX*thetaX) + 0.7*(j-centerY)*(j-centerY)/(2*thetaY*thetaY)));
+            z1 = amplitude * (exp(-((0.9*(i-centerX1)*(i-centerX1))/(2*thetaX*thetaX) + 0.9*(j-centerY1)*(j-centerY1)/(2*thetaY*thetaY))));
+            z2 = amplitude * exp(-((0.9*(i-centerX2)*(i-centerX2))/(2*thetaX*thetaX) + 0.9*(j-centerY2)*(j-centerY2)/(2*thetaY*thetaY)));
+            z3 = amplitude * exp(-((0.9*(i-centerX3)*(i-centerX3))/(2*thetaX*thetaX) + 0.9*(j-centerY3)*(j-centerY3)/(2*thetaY*thetaY)));
 
-            vertices[cpt++] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / 15, (float)j / 15),QVector3D(-7.0f + ((float)i),-7.0f + ((float)j), z)};
+
+            int z_max = std::max(z1,(std::max(z2,z3)));
+
+
+            vertices[cpt++] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z_max),QVector2D((float)i / 15, (float)j / 15),QVector3D(0.0,0.0, -1.0f)};
+            /*z=0.0f;
+            vertices[cpt++] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / 15, (float)j / 15),QVector3D(0.0f,0.0f, -1.0f)};*/
 
         }
     }

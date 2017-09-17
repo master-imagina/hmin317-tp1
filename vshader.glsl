@@ -5,6 +5,7 @@ precision mediump float;
 #endif
 uniform mat4 mvp_matrix;
 uniform vec4 light_position;
+uniform vec3 eye_pos;
 
 attribute vec4 a_position;
 attribute vec2 a_texcoord;
