@@ -49,7 +49,8 @@ void main()
     vec3 specular = spec * light_color * material.specular;
 
     vec3 result = ( ambient + diffuse);
-    result = object_color;
+
+    //result = object_color; // Disable lighting
 
     gl_FragColor = vec4(result, 1.0);
 }

@@ -112,9 +112,11 @@ void GeometryEngine::initPlaneGeometry(){
             int z_max = std::max(z1,(std::max(z2,z3)));
 
 
-            vertices[cpt++] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z_max),QVector2D((float)i / 15, (float)j / 15),QVector3D(0.0,0.0, -1.0f)};
-            /*z=0.0f;
-            vertices[cpt++] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / 15, (float)j / 15),QVector3D(0.0f,0.0f, -1.0f)};*/
+            /*vertices[cpt++] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z_max),QVector2D((float)i / 15, (float)j / 15),QVector3D(0.0,0.0, -1.0f)};*///Relief penser a changer le fragment shader ( disable lighting )
+
+            //Test lighting
+            z=0.0f;
+            vertices[cpt++] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / 15, (float)j / 15),QVector3D(0.0f,0.0f, -1.0f)};
 
         }
     }
