@@ -25,15 +25,15 @@ void main()
 {
 
     vec3 object_color = vec3(0.1+color_factor.z/6,0.1,0.1+(3-color_factor.z)/6);
-    vec3 ambient_color = vec3(0.0,0.0,1.0);
-    vec3 light_color = vec3(1.0,1.0,1.0);
+    vec3 ambient_color = vec3(1.0,0.0,0.0);
+    vec3 light_color = vec3(1.0,0.3,0.3);
 
     // Set fragment color from texture
     //
     vec3 norm = normalize(v_normal);
     vec3 light_direction = normalize(color_factor - light_position  );
     /*ambiant*/
-    float ambient_strength =0.3;
+    float ambient_strength =0.1;
     vec3 ambient = ambient_color * material.ambient * ambient_strength;
 
     /*Diffuse*/
