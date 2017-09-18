@@ -20,8 +20,9 @@ varying float height;
 void main()
 {
     // Set fragment color from texture
-    float diff = max(dot(normal, lightDir), 0.0);
+    float diff = max(dot(normal, lightDir), 0.5);
     vec4 albedo = vec4(1.0);
+
     if(height<0.5){
         albedo = texture2D(sand,v_texcoord*40.0);
     }else if(height<2.0){
@@ -35,8 +36,29 @@ void main()
     }
 
 
-    if(normal.y<0.8)
-        albedo = mix(texture2D(cliff,v_texcoord*40.0),albedo,normal.y-0.3);
+    float cliffAmout = 1.0f - normal.y;
+    float blendAmount;
+
+    float cliffMin = 0.4;
+    float cliffMax = 0.7;
+
+   // Auto Cliff
+   if(cliffAmout < cliffMin)
+   {
+       blendAmount = cliffAmout / cliffMin;
+       albedo = mix(albedo, texture2D(cliff,v_texcoord*40.0), blendAmount);
+   }
+
+   if((cliffAmout < cliffMax) && (cliffAmout >=cliffMin))
+   {
+       blendAmount = (cliffAmout - cliffMin) * (1.0 / (cliffMax - cliffMin));
+       albedo = mix(texture2D(cliff,v_texcoord*40.0), albedo, blendAmount);
+   }
+
+   if(cliffAmout >= cliffMax)
+   {
+       albedo = texture2D(cliff,v_texcoord*40.0);
+   }
 
     gl_FragColor = albedo * diff;
 }

@@ -19,6 +19,7 @@ varying vec3 normal;
 varying vec3 lightDir;
 varying float height;
 
+
 //! [0]
 void main()
 {
@@ -30,9 +31,6 @@ void main()
     gl_Position = mvp_matrix * computePosition;
 
     //compute Normal
-
-
-    // read neightbor heights using an arbitrary small offset
     ivec3 off = ivec3(-1, 1, 0);
 
 

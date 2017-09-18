@@ -72,6 +72,7 @@ MainWidget::MainWidget(QWidget *parent) :
     time = new QTimer;
     connect(time,SIGNAL(timeout()),this,SLOT(update()));
     time->start(16);
+    keyZPressed=0,keySPressed=0,keyQPressed=0,keyDPressed=0;
 }
 
 MainWidget::~MainWidget()
@@ -122,40 +123,50 @@ void MainWidget::mouseMoveEvent(QMouseEvent *event)
 {
     float dx = (event->x()-anchor.x());
     float dy = (event->y()-anchor.y());
-    if(mouseHaveBeenPress)
-        camera.move(dx,dy,0,0,0,0,0);
+    if(mouseHaveBeenPress){
+        this->dx = dx;
+        this->dy = dy;
+    }else{
+        this->dx = 0;
+        this->dy = 0;
+    }
     anchor = event->pos();
 }
 
 void MainWidget::wheelEvent(QWheelEvent *event)
 {
-    camera.move(0,0,event->delta()/120,0,0,0,0);
+    wheelDelta = event->delta()/120;
 }
 
 void MainWidget::keyPressEvent(QKeyEvent *event)
 {
-    int z=0,s=0,q=0,d=0;
 
     if(event->text() == "z"){
-        z=1;
+        keyZPressed=1;
     }
     if(event->text() == "s"){
-        s=1;
+        keySPressed=1;
     }
     if(event->text() == "q"){
-        q=1;
+        keyQPressed=1;
     }
     if(event->text() == "d"){
-        d=1;
+        keyDPressed=1;
     }
 
-    camera.move(0,0,0,z,s,q,d);
+
+}
+
+void MainWidget::keyReleaseEvent(QKeyEvent *event)
+{
+    keyZPressed=0,keySPressed=0,keyQPressed=0,keyDPressed=0;
 }
 //! [0]
 
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
 {
+
     // Decrease angular speed (friction)
     angularSpeed *= 0.99;
 
@@ -243,6 +254,7 @@ void MainWidget::initTextures()
     texture->setWrapMode(QOpenGLTexture::Repeat);
 
 
+
     sand = new QOpenGLTexture(QImage(":/sand.png").mirrored());
 
     // Set nearest filtering mode for texture minification
@@ -254,7 +266,7 @@ void MainWidget::initTextures()
     // Wrap texture coordinates by repeating
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     sand->setWrapMode(QOpenGLTexture::Repeat);
-
+    sand->setAutoMipMapGenerationEnabled(true);
 
     rock = new QOpenGLTexture(QImage(":/rock.png").mirrored());
 
@@ -267,7 +279,7 @@ void MainWidget::initTextures()
     // Wrap texture coordinates by repeating
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     rock->setWrapMode(QOpenGLTexture::Repeat);
-
+    rock->setAutoMipMapGenerationEnabled(true);
 
 
     cliff = new QOpenGLTexture(QImage(":/cliff.png").mirrored());
@@ -281,6 +293,7 @@ void MainWidget::initTextures()
     // Wrap texture coordinates by repeating
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     cliff->setWrapMode(QOpenGLTexture::Repeat);
+    cliff->setAutoMipMapGenerationEnabled(true);
 
     grass = new QOpenGLTexture(QImage(":/grass.png").mirrored());
 
@@ -293,6 +306,7 @@ void MainWidget::initTextures()
     // Wrap texture coordinates by repeating
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     grass->setWrapMode(QOpenGLTexture::Repeat);
+    grass->setAutoMipMapGenerationEnabled(true);
 }
 //! [4]
 
@@ -316,7 +330,10 @@ void MainWidget::resizeGL(int w, int h)
 void MainWidget::paintGL()
 {
     this->makeCurrent();
+    camera.move(dx,dy,wheelDelta,keyZPressed,keySPressed,keyQPressed,keyDPressed);
 
+    dx=0,dy=0;
+    wheelDelta = 0;
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

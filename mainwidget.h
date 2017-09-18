@@ -80,6 +80,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent ( QWheelEvent * event );
     void keyPressEvent(QKeyEvent* event);
+    void keyReleaseEvent(QKeyEvent* event);
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
@@ -111,6 +112,8 @@ private:
     qreal angularSpeed;
     QQuaternion rotation;
     CameraThird camera;
+    float dx,dy,wheelDelta;
+    int keyZPressed,keySPressed,keyQPressed,keyDPressed;
 };
 
 #endif // MAINWIDGET_H

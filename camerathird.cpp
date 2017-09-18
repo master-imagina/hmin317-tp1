@@ -7,7 +7,7 @@ CameraThird::CameraThird(float distanceFromPivot){
     this->distanceFromPivot = distanceFromPivot,
     position.x=0;position.y=1;position.z=5;
     lookAt.x=0;lookAt.y=0;lookAt.z=0;
-    pitch=20;
+    pitch=40;
     angleAroundPivot=180;
 
 }
@@ -15,10 +15,10 @@ CameraThird::CameraThird(float distanceFromPivot){
 CameraThird::CameraThird()
 {
     position.x=0;position.y=1;position.z=5;
-    lookAt.x=0;lookAt.y=0;lookAt.z=0;
-    pitch=1;
-    angleAroundPivot=0;
-    distanceFromPivot=10;
+    lookAt.x=128;lookAt.y=0;lookAt.z=128;
+    pitch=20;
+    angleAroundPivot=40;
+    distanceFromPivot=20;
 
 }
 
@@ -36,7 +36,6 @@ void CameraThird::move(float dx, float dy, int dw, int z, int s, int q, int d){
         pitch -= pitchChange;
     float angleChange = dx * 0.3f;
     angleAroundPivot -= angleChange;
-
 
 
     if(z){
