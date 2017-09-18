@@ -61,6 +61,9 @@ MainWidget::MainWidget(QWidget *parent) :
     angularSpeed(0),
     frotation(0)
 {
+    position_x = 0;
+    position_y = 0;
+    position_z = -40.0;
 }
 
 MainWidget::~MainWidget()
@@ -199,6 +202,32 @@ void MainWidget::resizeGL(int w, int h)
 }
 //! [5]
 
+void MainWidget::keyPressEvent(QKeyEvent *e){
+    switch(e->key()){
+    case Qt::Key_Up:
+        position_z ++;
+        break;
+    case Qt::Key_Down:
+        position_z --;
+        break;
+    case Qt::Key_Left:
+        position_x ++;
+        break;
+    case Qt::Key_Right:
+        position_x --;
+        break;
+    case Qt::Key_A:
+        position_y ++;
+        break;
+    case Qt::Key_E:
+        position_y --;
+        break;
+    default:
+        break;
+    }
+    update();
+}
+
 void MainWidget::paintGL()
 {
     // Clear color and depth buffer
@@ -209,12 +238,25 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -40.0);
+    matrix.translate(position_x,position_y,position_z);
     matrix.rotate(rotation);
     //matrix.rotate(90,0,0,1);
     //matrix.rotate(frotation,0,1,0);
 
     // Set modelview-projection matrix
+    program.setUniformValue("mvp_matrix", projection * matrix);
+//! [6]
+
+    // Use texture unit 0 which contains cube.png
+    program.setUniformValue("texture", 0);
+
+    // Draw cube geometry
+    //geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
+
+
+
+    matrix.translate(position_x+8,position_y,position_z);
     program.setUniformValue("mvp_matrix", projection * matrix);
 //! [6]
 

@@ -62,6 +62,8 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 
+#include <iostream>
+
 class GeometryEngine;
 
 class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
@@ -73,6 +75,9 @@ public:
     ~MainWidget();
 
 protected:
+
+    void keyPressEvent(QKeyEvent* e) override;
+
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
     void timerEvent(QTimerEvent *e) override;
@@ -98,6 +103,10 @@ private:
     qreal angularSpeed;
     QQuaternion rotation;
     float frotation;
+
+    float position_x;
+    float position_y;
+    float position_z;
 };
 
 #endif // MAINWIDGET_H

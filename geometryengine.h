@@ -66,13 +66,16 @@ public:
 
 private:
     void initCubeGeometry();
-    void initPlaneGeometry();
+    void initPlaneGeometry(int w,int h);
 
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;
 
     QOpenGLBuffer arrayBuf2;
     QOpenGLBuffer indexBuf2;
+
+    int plane_w;
+    int plane_h;
 };
 
 #endif // GEOMETRYENGINE_H
