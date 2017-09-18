@@ -254,7 +254,7 @@ void MainWidget::paintGL()
     //geometries->drawCubeGeometry(&program);
     geometries->drawPlaneGeometry(&program);
 
-
+/*
 
     matrix.translate(position_x+8,position_y,position_z);
     program.setUniformValue("mvp_matrix", projection * matrix);
@@ -265,5 +265,5 @@ void MainWidget::paintGL()
 
     // Draw cube geometry
     //geometries->drawCubeGeometry(&program);
-    geometries->drawPlaneGeometry(&program);
+    geometries->drawPlaneGeometry(&program);*/
 }

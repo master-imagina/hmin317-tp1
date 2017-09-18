@@ -74,7 +74,7 @@ GeometryEngine::GeometryEngine()
 
     // Initializes cube geometry and transfers it to VBOs
     initCubeGeometry();
-    initPlaneGeometry(160,16);
+    initPlaneGeometry(16,16);
 }
 
 GeometryEngine::~GeometryEngine()
@@ -87,7 +87,7 @@ GeometryEngine::~GeometryEngine()
 //! [0]
 
 void GeometryEngine::initPlaneGeometry(int w,int h)
-{
+{/*
     VertexData vertices[w*h];
     GLushort indices[(w-1)*(h-1)*4];
 
@@ -106,18 +106,53 @@ void GeometryEngine::initPlaneGeometry(int w,int h)
             indices[i*(h-1)*4+j*4+0] = i*h+j;
             indices[i*(h-1)*4+j*4+1] = i*h+(j+1);
             indices[i*(h-1)*4+j*4+2] = (i+1)*h+j ;
+
+            indices[i*(h-1)*4+j*4+1] = i*h+(j+1);
+            indices[i*(h-1)*4+j*4+2] = (i+1)*h+j ;
             indices[i*(h-1)*4+j*4+3] = (i+1)*h+(j+1);
         }
     }
+    */
+    int count = 16;
+    int height = 16;
+    int width = 16;
+    VertexData vertices[count*count];
+
+    int cpt = 0;
+
+    for (int i = 0; i< count; ++i) {
+        for (int j = 0; j < count; ++j) {
+            float z = (float)(rand()%100)/100.0;
+            vertices[cpt++] = {QVector3D(-7.0f + ((float)i), -7.0f + ((float)j), z),QVector2D((float)i / 15, (float)j / 15)};
+
+        }
+    }
+
+    int size = (2*width)*(height-1) + 2*(height-2);
+
+    GLushort indices[size];
+    int offset = 0;
+    int i,j;
+    for (j = 0; j < h-1; ++j) {
+            if(j > 0 && j < h-1)
+                indices[offset++] = j*count;
+            for (i = 0; i < w; ++i) {
+                indices[offset++] = j*count+i;
+                indices[offset++] = (j+1)*count+i;
+            }
+            if(j < h - 1)
+                indices[offset++] = (j+1)*count+(i-1);
+        }
+
 
 //! [1]
     // Transfer vertex data to VBO 0
     arrayBuf2.bind();
-    arrayBuf2.allocate(vertices, w*h * sizeof(VertexData));
+    arrayBuf2.allocate(vertices, 256 * sizeof(VertexData));
 
     // Transfer index data to VBO 1
     indexBuf2.bind();
-    indexBuf2.allocate(indices, (w-1)*(h-1)*4 * sizeof(GLushort));
+    indexBuf2.allocate(indices, 508 * sizeof(GLushort));
 //! [1]
 }
 
@@ -245,5 +280,5 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLE_STRIP, 4*(plane_w-1)*(plane_h-1), GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLE_STRIP, 508, GL_UNSIGNED_SHORT, 0);
 }
