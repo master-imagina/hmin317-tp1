@@ -91,6 +91,7 @@ private:
 
     QOpenGLTexture *m_texture;
 
+    QMatrix4x4 m_modelViewMatrix;
     QMatrix4x4 m_projectionMatrix;
 
     QVector2D m_mousePressPosition;

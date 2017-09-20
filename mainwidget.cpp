@@ -193,12 +193,12 @@ void MainWidget::paintGL()
     m_texture->bind();
 
     // Calculate model view transformation
-    QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
-    matrix.rotate(m_rotation);
+    m_modelViewMatrix.setToIdentity();
+    m_modelViewMatrix.translate(0.0, 0.0, -5.0);
+    m_modelViewMatrix.rotate(m_rotation);
 
     // Set modelview-projection matrix
-    m_shaderProgram.setUniformValue("mvp_matrix", m_projectionMatrix * matrix);
+    m_shaderProgram.setUniformValue("mvp_matrix", m_projectionMatrix * m_modelViewMatrix);
 
     // Use texture unit 0 which contains cube.png
     m_shaderProgram.setUniformValue("texture", 0);
