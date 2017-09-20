@@ -50,16 +50,24 @@
 
 #include "mainwidget.h"
 
-#include <QMouseEvent>
-
 #include <math.h>
+
+#include "cameracontroller.h"
+
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
-    m_geometries(0),
-    m_texture(0),
-    m_angularSpeed(0)
+    m_timer(),
+    m_shaderProgram(),
+    m_geometries(nullptr),
+    m_texture(nullptr),
+    m_eyeVec(5, 5, 5),
+    m_targetVec(0, 0.2, 0),
+    m_upVec(0, 0, 1),
+    m_projectionMatrix(),
+    m_cameraController(new CameraController(this))
 {
+    installEventFilter(m_cameraController);
 }
 
 MainWidget::~MainWidget()
@@ -72,46 +80,9 @@ MainWidget::~MainWidget()
     doneCurrent();
 }
 
-void MainWidget::mousePressEvent(QMouseEvent *e)
-{
-    // Save mouse press position
-    m_mousePressPosition = QVector2D(e->localPos());
-}
-
-void MainWidget::mouseReleaseEvent(QMouseEvent *e)
-{
-    // Mouse release position - mouse press position
-    QVector2D diff = QVector2D(e->localPos()) - m_mousePressPosition;
-
-    // Rotation axis is perpendicular to the mouse position difference
-    // vector
-    QVector3D n = QVector3D(diff.y(), diff.x(), 0.0).normalized();
-
-    // Accelerate angular speed relative to the length of the mouse sweep
-    qreal acc = diff.length() / 100.0;
-
-    // Calculate new rotation axis as weighted sum
-    m_rotationAxis = (m_rotationAxis * m_angularSpeed + n * acc).normalized();
-
-    // Increase angular speed
-    m_angularSpeed += acc;
-}
-
 void MainWidget::timerEvent(QTimerEvent *)
 {
-    // Decrease angular speed (friction)
-    m_angularSpeed *= 0.99;
-
-    // Stop rotation when speed goes below threshold
-    if (m_angularSpeed < 0.01) {
-        m_angularSpeed = 0.0;
-    } else {
-        // Update rotation
-        m_rotation = QQuaternion::fromAxisAndAngle(m_rotationAxis, m_angularSpeed) * m_rotation;
-
-        // Request an update
-        update();
-    }
+    update();
 }
 
 void MainWidget::initializeGL()
@@ -176,7 +147,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 1.0, zFar = 100.0, fov = 45.0;
 
     // Reset projection
     m_projectionMatrix.setToIdentity();
@@ -192,13 +163,14 @@ void MainWidget::paintGL()
 
     m_texture->bind();
 
-    // Calculate model view transformation
-    m_modelViewMatrix.setToIdentity();
-    m_modelViewMatrix.translate(0.0, 0.0, -5.0);
-    m_modelViewMatrix.rotate(m_rotation);
+    // Calculate view transformation
+    m_cameraController->updateViewMatrix(m_eyeVec, m_targetVec, m_upVec);
+
+    m_viewMatrix.setToIdentity();
+    m_viewMatrix.lookAt(m_eyeVec, m_targetVec, m_upVec);
 
     // Set modelview-projection matrix
-    m_shaderProgram.setUniformValue("mvp_matrix", m_projectionMatrix * m_modelViewMatrix);
+    m_shaderProgram.setUniformValue("mvp_matrix", m_projectionMatrix * m_viewMatrix);
 
     // Use texture unit 0 which contains cube.png
     m_shaderProgram.setUniformValue("texture", 0);

@@ -62,7 +62,10 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 
+
 class GeometryEngine;
+class CameraController;
+
 
 class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -73,8 +76,6 @@ public:
     ~MainWidget();
 
 protected:
-    void mousePressEvent(QMouseEvent *e) override;
-    void mouseReleaseEvent(QMouseEvent *e) override;
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
@@ -92,13 +93,14 @@ private:
 
     QOpenGLTexture *m_texture;
 
-    QMatrix4x4 m_modelViewMatrix;
+    QVector3D m_eyeVec;
+    QVector3D m_targetVec;
+    QVector3D m_upVec;
+    QMatrix4x4 m_viewMatrix;
+
     QMatrix4x4 m_projectionMatrix;
 
-    QVector2D m_mousePressPosition;
-    QVector3D m_rotationAxis;
-    qreal m_angularSpeed;
-    QQuaternion m_rotation;
+    CameraController *m_cameraController;
 };
 
 #endif // MAINWIDGET_H
