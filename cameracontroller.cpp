@@ -1,8 +1,6 @@
 #include "cameracontroller.h"
 
 #include <QKeyEvent>
-#include <QMatrix4x4>
-#include <QtMath>
 
 
 CameraController::CameraController(QObject *parent) :

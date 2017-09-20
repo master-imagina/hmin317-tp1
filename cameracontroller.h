@@ -2,9 +2,7 @@
 #define CAMERACONTROLLER_H
 
 #include <QObject>
-#include <QPoint>
 #include <QVector3D>
-
 
 class QKeyEvent;
 class QMouseEvent;
