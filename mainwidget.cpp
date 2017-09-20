@@ -94,71 +94,53 @@ void MainWidget::initializeGL()
     initShaders();
     initTextures();
 
-    // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
-
-    // Enable back face culling
     glEnable(GL_CULL_FACE);
 
     m_geometries = new GeometryEngine;
 
-    // Use QBasicTimer because its faster than QTimer
     m_timer.start(12, this);
 }
 
 void MainWidget::initShaders()
 {
-    // Compile vertex shader
-    if (!m_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/geom_textured.vert"))
+    if (!m_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/geom_textured.vert")) {
         close();
+    }
 
-    // Compile fragment shader
-    if (!m_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/geom_textured.frag"))
+    if (!m_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/geom_textured.frag")) {
         close();
+    }
 
-    // Link shader pipeline
-    if (!m_shaderProgram.link())
+    if (!m_shaderProgram.link()) {
         close();
+    }
 
-    // Bind shader pipeline for use
-    if (!m_shaderProgram.bind())
+    if (!m_shaderProgram.bind()) {
         close();
+    }
 }
 
 void MainWidget::initTextures()
 {
-    // Load cube.png image
     m_texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
-
-    // Set nearest filtering mode for texture minification
     m_texture->setMinificationFilter(QOpenGLTexture::Nearest);
-
-    // Set bilinear filtering mode for texture magnification
     m_texture->setMagnificationFilter(QOpenGLTexture::Linear);
-
-    // Wrap texture coordinates by repeating
-    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     m_texture->setWrapMode(QOpenGLTexture::Repeat);
 }
 
 void MainWidget::resizeGL(int w, int h)
 {
-    // Calculate aspect ratio
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
-    // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
     const qreal zNear = 1.0, zFar = 100.0, fov = 45.0;
 
-    // Reset projection
     m_projectionMatrix.setToIdentity();
-
-    // Set perspective projection
     m_projectionMatrix.perspective(fov, aspect, zNear, zFar);
 }
 
 void MainWidget::paintGL()
 {
-    // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_texture->bind();
@@ -169,10 +151,8 @@ void MainWidget::paintGL()
     m_viewMatrix.setToIdentity();
     m_viewMatrix.lookAt(m_eyeVec, m_targetVec, m_upVec);
 
-    // Set modelview-projection matrix
+    // Send uniforms to shaders
     m_shaderProgram.setUniformValue("mvp_matrix", m_projectionMatrix * m_viewMatrix);
-
-    // Use texture unit 0 which contains cube.png
     m_shaderProgram.setUniformValue("texture", 0);
 
     // Draw cube geometry
