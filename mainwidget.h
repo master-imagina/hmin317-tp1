@@ -85,18 +85,18 @@ protected:
     void initTextures();
 
 private:
-    QBasicTimer timer;
-    QOpenGLShaderProgram program;
-    GeometryEngine *geometries;
+    QBasicTimer m_timer;
+    QOpenGLShaderProgram m_shaderProgram;
+    GeometryEngine *m_geometries;
 
-    QOpenGLTexture *texture;
+    QOpenGLTexture *m_texture;
 
-    QMatrix4x4 projection;
+    QMatrix4x4 m_projectionMatrix;
 
-    QVector2D mousePressPosition;
-    QVector3D rotationAxis;
-    qreal angularSpeed;
-    QQuaternion rotation;
+    QVector2D m_mousePressPosition;
+    QVector3D m_rotationAxis;
+    qreal m_angularSpeed;
+    QQuaternion m_rotation;
 };
 
 #endif // MAINWIDGET_H
