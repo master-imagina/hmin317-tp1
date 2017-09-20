@@ -22,6 +22,25 @@
 
 % --------------> Document beginning <--------------
 \begin{document}
+  %Pattern de Peter Wilson
+  \begin{titlepage} % Suppresses displaying the page number on the title page and the subsequent page counts as page 1
+	
+	  \raggedleft % Right align the title page
+	
+	  \rule{1pt}{\textheight} % Vertical line
+	  \hspace{0.05\textwidth} % Whitespace between the vertical line and title page text
+	  \parbox[b]{0.75\textwidth}{ % Paragraph box for holding the title page text, adjust the width to move the title page left or right on the page
+		
+		  {\Huge\bfseries Compte-rendu TP1 \\[0.5\baselineskip] Codes graphiques pour le stockage d'informations}\\[2\baselineskip] % Title
+		  {\large\textit{HMIN322 - Codage et Compression Multimedia}}\\[4\baselineskip] % Subtitle or further description
+		  {\Large\textsc{BOYER Benoît}} % Author name, lower case for consistent small caps
+		
+		  \vspace{0.5\textheight} % Whitespace between the title block and the publisher
+		
+		  {\noindent M2 IMAGINA - Septembre 2017}\\[\baselineskip] % Publisher and logo
+	  }
+
+  \end{titlepage}
 
     \section{Question 1}
     \subsection{A quoi servent les classes MainWidget et GeometryEngine ?}
@@ -72,5 +91,6 @@
 	\pagebreak
 	\section{Question 3}
 	\subsection{Création d'une surface plane}
+	  Pour créer une surface plane, il faut créer une surface en deux dimentions, dans ce cas il faut mettre un des axes à 0. Dans mon cas, je vais mettre la valeur de l'axe z à 0.
     	
 \end{document}

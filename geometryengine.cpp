@@ -180,12 +180,12 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
 }
 //! [2]
 
+//Fonction modifiée pour faire une surface plane
 void GeometryEngine::initPlaneGeometry()
 {
-// For cube we would need only 8 vertices but we have to
-    // duplicate vertex for each face because texture coordinate
-    // is different.
 
+    // ^ y
+    // I----> x
     // -1.5        +1.5
     // 00 01 02 03 +1.5
     // 04 05 06 07
@@ -200,22 +200,22 @@ void GeometryEngine::initPlaneGeometry()
             {QVector3D( 1.5f, -1.5f,  0.0f), QVector2D(1.00f, 1.00f)}, // v3
 
             // Vertex data for face 1
-            {QVector3D(-1.5f, -0.5f, 0.0f), QVector2D(0.00f, 0.66f)}, // v4
-            {QVector3D(-0.5f, -0.5f, 0.0f), QVector2D(0.33f, 0.66f)}, // v5
-            {QVector3D( 0.5f, -0.5f, 0.0f), QVector2D(0.66f, 0.66f)}, // v6
-            {QVector3D( 1.5f, -0.5f, 0.0f), QVector2D(1.00f, 0.66f)}, // v7
+            {QVector3D(-1.5f, -0.5f,  0.0f), QVector2D(0.00f, 0.66f)}, // v4
+            {QVector3D(-0.5f, -0.5f, -1.0f), QVector2D(0.33f, 0.66f)}, // v5
+            {QVector3D( 0.5f, -0.5f, -2.0f), QVector2D(0.66f, 0.66f)}, // v6
+            {QVector3D( 1.5f, -0.5f,  0.0f), QVector2D(1.00f, 0.66f)}, // v7
 
             // Vertex data for face 2
-            {QVector3D(-1.5f,  0.5f, 0.0f), QVector2D(0.00f, 0.33f)}, // v8
-            {QVector3D(-0.5f,  0.5f, 0.0f), QVector2D(0.33f, 0.33f)}, // v9
-            {QVector3D( 0.5f,  0.5f, 0.0f), QVector2D(0.66f, 0.33f)}, // v10
-            {QVector3D( 1.5f,  0.5f, 0.0f), QVector2D(1.00f, 0.33f)}, // v11
+            {QVector3D(-1.5f,  0.5f,  0.0f), QVector2D(0.00f, 0.33f)}, // v8
+            {QVector3D(-0.5f,  0.5f,  0.0f), QVector2D(0.33f, 0.33f)}, // v9
+            {QVector3D( 0.5f,  0.5f, -1.0f), QVector2D(0.66f, 0.33f)}, // v10
+            {QVector3D( 1.5f,  0.5f,  0.0f), QVector2D(1.00f, 0.33f)}, // v11
 
             // Vertex data for face 3
-            {QVector3D(-1.5f,  1.5f, 0.0f), QVector2D(0.00f, 0.00f)}, // v12
-            {QVector3D(-0.5f,  1.5f, 0.0f), QVector2D(0.33f, 0.00f)}, // v13
-            {QVector3D( 0.5f,  1.5f, 0.0f), QVector2D(0.66f, 0.00f)}, // v14
-            {QVector3D( 1.5f,  1.5f, 0.0f), QVector2D(1.00f, 0.00f)}, // v15
+            {QVector3D(-1.5f,  1.5f,  0.0f), QVector2D(0.00f, 0.00f)}, // v12
+            {QVector3D(-0.5f,  1.5f,  0.0f), QVector2D(0.33f, 0.00f)}, // v13
+            {QVector3D( 0.5f,  1.5f,  0.0f), QVector2D(0.66f, 0.00f)}, // v14
+            {QVector3D( 1.5f,  1.5f,  0.0f), QVector2D(1.00f, 0.00f)}, // v15
     };
     // Indices for drawing cube faces using triangle strips.
     // Triangle strips can be connected by duplicating indices
