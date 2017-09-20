@@ -104,11 +104,13 @@ void MainWidget::initializeGL()
 
 void MainWidget::initShaders()
 {
-    if (!m_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/geom_textured.vert")) {
+    if (!m_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Vertex,
+                                                 ":/geom_textured.vert")) {
         close();
     }
 
-    if (!m_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/geom_textured.frag")) {
+    if (!m_shaderProgram.addShaderFromSourceFile(QOpenGLShader::Fragment,
+                                                 ":/geom_textured.frag")) {
         close();
     }
 
@@ -152,7 +154,8 @@ void MainWidget::paintGL()
     m_viewMatrix.lookAt(m_eyeVec, m_targetVec, m_upVec);
 
     // Send uniforms to shaders
-    m_shaderProgram.setUniformValue("mvp_matrix", m_projectionMatrix * m_viewMatrix);
+    m_shaderProgram.setUniformValue("mvp_matrix",
+                                    m_projectionMatrix * m_viewMatrix);
     m_shaderProgram.setUniformValue("texture", 0);
 
     // Draw cube geometry
