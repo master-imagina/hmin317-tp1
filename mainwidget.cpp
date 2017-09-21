@@ -209,7 +209,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(posx, posy, -5.0);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -229,10 +229,12 @@ void MainWidget::keyPressEvent(QKeyEvent *e) {
         std::exit(0);
 
     //Reception des inputs
-    float _x = (int)(e->key() == Qt::Key_Right || e->key() == Qt::Key_D)  - (int)(e->key() == Qt::Key_Left || e->key() == Qt::Key_Q);
-    float _y = (int)(e->key() == Qt::Key_Up    || e->key() == Qt::Key_Z)  - (int)(e->key() == Qt::Key_Down || e->key() == Qt::Key_S);
+    float _x = (float)(e->key() == Qt::Key_Right || e->key() == Qt::Key_D) - (float)(e->key() == Qt::Key_Left || e->key() == Qt::Key_Q);
+    float _y = (float)(e->key() == Qt::Key_Up    || e->key() == Qt::Key_Z) - (float)(e->key() == Qt::Key_Down || e->key() == Qt::Key_S);
 
-    glLoadIdentity(); //Reset de la matrice
-    glTranslatef(_x, _y, 0);
-    glFlush();
+    posx += _x/10.f;
+    posy += _y/10.f;
+
+    update(); //Il faut mettre a jour la scene !
+
 }

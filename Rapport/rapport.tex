@@ -70,7 +70,7 @@
 	\section{Question 2}
 	\subsection{Expliquer le fonctionnement des deux fonctions de la classe CubeGeometry.}
 	    La fonction {\lstinline{void initCubeGeometry()}} permet d'initialiser le cube en créant dans un premier temps les vertices du cube :
-    \lstinputlisting[language=C++, firstline=85, lastline=99, caption=Création de deux faces du cube]{../geometryengine.cpp}
+    \lstinputlisting[language=C++, firstline=90, lastline=101, caption=Création de deux faces du cube]{../geometryengine.cpp}
     Pour ensuite dans un second temps, recenser les indices pour faire les triangles des faces des cubes :
     \lstinputlisting[language=C++, firstline=126, lastline=140, caption=Création des indices]{../geometryengine.cpp}
     Et pour terminer, on transfère les données au GPU via des buffers :
@@ -91,9 +91,10 @@
 	\pagebreak
 	\section{Question 3}
 	\subsection{Création d'une surface plane}
-	  Pour créer une surface plane, il faut créer une surface en deux dimentions, dans ce cas il faut mettre un des axes à 0. Dans mon cas, je vais mettre la valeur de l'axe z à 0. La création de la surface plane se fera dans la fonction \lstinline{void GeometryEngine::initPlaneGeometry()}. Dans un premier temps, on va recenser les vertices :
+	  Pour créer une surface plane, il faut créer une surface en deux dimentions, dans ce cas il faut mettre un des axes à 0, ici ça sera l'axe z. La création de la surface plane se fera dans la fonction \lstinline{void GeometryEngine::initPlaneGeometry()}. Dans un premier temps, on va recenser les vertices :
 	  \lstinputlisting[language=C++, firstline=195, lastline=219, caption=Création des points]{../geometryengine.cpp}
 	  Puis on enverra les données, comme effectué pour le cube.
+	  \pagebreak
 	  
 	\section{Question 4}
 	\subsection{Modifier l'altitude des sommets pour effectuer un relief}
@@ -101,9 +102,17 @@
 	\image{sommet.png}{Exemple d'un terrain avec relief}
 	
 	\subsection{Déplacer la caméra à hauteur fixe}
-	Pour déplacer la caméra à hauteur fixe, on va devoir déplacer la caméra uniquement sur les axes x et y. On va devoir utiliser les matrices (et plus précisément des translations) pour faire bouger la caméra.\\
+	Pour déplacer la caméra à hauteur fixe, on va devoir déplacer la caméra uniquement sur les axes x et y, en incrémentant la valeur voulue selon la touche pressée.\\
 	Dans un premier temps, nous allons devoir recréer la fonction \lstinline{keyPressEvent(QKeyEvent *e)} pour récupérer l'entrée clavier, et plus précisément la touche appuyée.\\
 	On va récuperer la touche appuyée avec \lstinline{e->key()}, auquel on fera une comparaison avec la touche voulue :
-	\lstinputlisting[language=C++, firstline=227, lastline=229, caption=Exemple où on regarde si la touche échappe est celle pressée]{../mainwidget.cpp}
+	\lstinputlisting[language=C++, firstline=227, lastline=229, caption=Exemple où on regarde si la touche Échap est celle pressée]{../mainwidget.cpp}
+	Une fois qu'on peut récupérer les entrées utilisateurs, l'étape suivante est de pouvoir mettre les coordonnées en dynamique, pour cela on va modifier une ligne de la fonction \lstinline{void MainWidget::paintGL()} :
+	\lstinputlisting[language=C++, firstline=211, lastline=212, caption=La translation en x et y ont désormais une variable globale]{../mainwidget.cpp}
+	Ensuite, dans la fonction \lstinline{keyPressEvent(QKeyEvent *e)}, on va simplement incrémenter la globale selon l'entrée clavier :
+	\lstinputlisting[language=C++, firstline=231, lastline=238, caption=L'incrémentation de la position selon l'entrée utilisateur]{../mainwidget.cpp}
+	Suite à cette fonction, on peut déplacer la caméra en utilisant les flèches du clavier ou les touches ZQSD.
+	
+	\pagebreak
+	\section{Bonus}
     	
 \end{document}
