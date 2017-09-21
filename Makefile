@@ -321,6 +321,8 @@ qrc_shaders.cpp: shaders.qrc \
 
 qrc_textures.cpp: textures.qrc \
 		chess.png \
+		snow.png \
+		clay.png \
 		cube.png
 	/usr/lib/x86_64-linux-gnu/qt5/bin/rcc -name textures textures.qrc -o qrc_textures.cpp
 
