@@ -60,6 +60,13 @@ MainWidget::MainWidget(QWidget *parent) :
     texture(0),
     angularSpeed(0)
 {
+    fPositionX = 0.0;
+    fPositionY = 0.0;
+    fPositionZ = -5.0;
+    for (int i=0;i<10;i++)
+    {
+        bKeys[i] = false;
+    }
 }
 
 MainWidget::~MainWidget()
@@ -99,6 +106,76 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 }
 //! [0]
 
+void MainWidget::keyPressEvent(QKeyEvent *e)
+{
+    int key = e->key();
+    switch (key)
+    {
+        case Qt::Key_Z:
+            e->accept();
+            bKeys[0] = true;
+            break;
+        case Qt::Key_S:
+            e->accept();
+            bKeys[1] = true;
+            break;
+        case Qt::Key_Q:
+            e->accept();
+            bKeys[2] = true;
+            break;
+        case Qt::Key_D:
+            e->accept();
+            bKeys[3] = true;
+            break;
+        case Qt::Key_A:
+            e->accept();
+            bKeys[4] = true;
+            break;
+        case Qt::Key_E:
+            e->accept();
+            bKeys[5] = true;
+            break;
+        default:
+            e->ignore();
+    }
+    update();
+}
+
+void MainWidget::keyReleaseEvent(QKeyEvent *e)
+{
+    int key = e->key();
+    switch (key)
+    {
+        case Qt::Key_Z:
+            e->accept();
+            bKeys[0] = false;
+            break;
+        case Qt::Key_S:
+            e->accept();
+            bKeys[1] = false;
+            break;
+        case Qt::Key_Q:
+            e->accept();
+            bKeys[2] = false;
+            break;
+        case Qt::Key_D:
+            e->accept();
+            bKeys[3] = false;
+            break;
+        case Qt::Key_A:
+            e->accept();
+            bKeys[4] = false;
+            break;
+        case Qt::Key_E:
+            e->accept();
+            bKeys[5] = false;
+            break;
+        default:
+            e->ignore();
+    }
+    update();
+}
+
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
 {
@@ -110,11 +187,17 @@ void MainWidget::timerEvent(QTimerEvent *)
         angularSpeed = 0.0;
     } else {
         // Update rotation
-        rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
+        rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation; }
+
+        if (bKeys[0]) fPositionY -= 0.1;
+        if (bKeys[1]) fPositionY += 0.1;
+        if (bKeys[2]) fPositionX += 0.1;
+        if (bKeys[3]) fPositionX -= 0.1;
+        if (bKeys[4]) fPositionZ += 0.1;
+        if (bKeys[5]) fPositionZ -= 0.1;
 
         // Request an update
         update();
-    }
 }
 //! [1]
 
@@ -166,7 +249,7 @@ void MainWidget::initShaders()
 void MainWidget::initTextures()
 {
     // Load cube.png image
-    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
+    texture = new QOpenGLTexture(QImage(":/rock.png").mirrored());
 
     // Set nearest filtering mode for texture minification
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
@@ -187,7 +270,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 0.1, zFar = 30.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -207,8 +290,8 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
-    matrix.rotate(rotation);
+    matrix.translate(fPositionX, fPositionY, fPositionZ);
+    //matrix.rotate(rotation);
 
     // Set modelview-projection matrix
     program.setUniformValue("mvp_matrix", projection * matrix);
@@ -218,5 +301,5 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
 }
