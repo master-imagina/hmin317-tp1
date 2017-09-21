@@ -72,21 +72,23 @@
 	    La fonction {\lstinline{void initCubeGeometry()}} permet d'initialiser le cube en créant dans un premier temps les vertices du cube :
     \lstinputlisting[language=C++, firstline=90, lastline=101, caption=Création de deux faces du cube]{../geometryengine.cpp}
     Pour ensuite dans un second temps, recenser les indices pour faire les triangles des faces des cubes :
-    \lstinputlisting[language=C++, firstline=126, lastline=140, caption=Création des indices]{../geometryengine.cpp}
+    \lstinputlisting[language=C++, firstline=135, lastline=142, caption=Création des indices]{../geometryengine.cpp}
+    \pagebreak
+    
     Et pour terminer, on transfère les données au GPU via des buffers :
-    \lstinputlisting[language=C++, firstline=143, lastline=149, caption=Transfert des données via un VBO]{../geometryengine.cpp}
+    \lstinputlisting[language=C++, firstline=145, lastline=151, caption=Transfert des données via un VBO]{../geometryengine.cpp}
     Une fois terminé, la fonction {\lstinline{void drawCubeGeometry(QOpenGLShaderProgram *program)}} doit être utilisée pour dessiner le cube.\\ \\*
     Dans un premier temps, on va indiquer à OpenGL quels VBO ({\it{vertex shaders}}) utiliser :
-    \lstinputlisting[language=C++, firstline=156, lastline=158, caption=Selection des VBO]{../geometryengine.cpp}
+    \lstinputlisting[language=C++, firstline=158, lastline=160, caption=Selection des VBO]{../geometryengine.cpp}
     Ensuite, on indique au pointeur le début du VBO, puis le lieu des données :
-    \lstinputlisting[language=C++, firstline=160, lastline=166, caption=Indication aux vshader des données]{../geometryengine.cpp}
+    \lstinputlisting[language=C++, firstline=162, lastline=168, caption=Indication aux vshader des données]{../geometryengine.cpp}
     \pagebreak
     
     Ensuite, on indique où se trouve les coordonnées pour les textures dans la mémoire, puis on la donne au buffer :
-    \lstinputlisting[language=C++, firstline=168, lastline=174, caption=Indication des coordonnées de texture]{../geometryengine.cpp}
+    \lstinputlisting[language=C++, firstline=170, lastline=176, caption=Indication des coordonnées de texture]{../geometryengine.cpp}
     
     Et pour finir, on dessine le cube.
-    \lstinputlisting[language=C++, firstline=176, lastline=177, caption=Dessin du cube]{../geometryengine.cpp}
+    \lstinputlisting[language=C++, firstline=178, lastline=179, caption=Dessin du cube]{../geometryengine.cpp}
 	
 	\pagebreak
 	\section{Question 3}
@@ -106,6 +108,9 @@
 	Dans un premier temps, nous allons devoir recréer la fonction \lstinline{keyPressEvent(QKeyEvent *e)} pour récupérer l'entrée clavier, et plus précisément la touche appuyée.\\
 	On va récuperer la touche appuyée avec \lstinline{e->key()}, auquel on fera une comparaison avec la touche voulue :
 	\lstinputlisting[language=C++, firstline=227, lastline=229, caption=Exemple où on regarde si la touche Échap est celle pressée]{../mainwidget.cpp}
+	
+	\pagebreak
+	
 	Une fois qu'on peut récupérer les entrées utilisateurs, l'étape suivante est de pouvoir mettre les coordonnées en dynamique, pour cela on va modifier une ligne de la fonction \lstinline{void MainWidget::paintGL()} :
 	\lstinputlisting[language=C++, firstline=211, lastline=212, caption=La translation en x et y ont désormais une variable globale]{../mainwidget.cpp}
 	Ensuite, dans la fonction \lstinline{keyPressEvent(QKeyEvent *e)}, on va simplement incrémenter la globale selon l'entrée clavier :
