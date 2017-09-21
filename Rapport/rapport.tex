@@ -41,6 +41,9 @@
 	  }
 
   \end{titlepage}
+  
+    \tableofcontents
+    \pagebreak
 
     \section{Question 1}
     \subsection{A quoi servent les classes MainWidget et GeometryEngine ?}
@@ -119,5 +122,18 @@
 	
 	\pagebreak
 	\section{Bonus}
+	A partir de cette question, tout le code implémenté et cité ne figure pas dans le programme final.
+	\subsection{Jouer avec la lumière}
+	Pour la lumière, le premier élément serait d'activer l'éclairage, puis d'allumer une lumière précise :
+	\lstinputlisting[language=C++, firstline=1, lastline=2, caption=Activation de la lumière]{bonus.txt}
+	Ensuite, il faudra appliquer un matériel plus poussé sur le plan, c'est à dire définir la couleur en spéculaire, ambiante et diffuse :
+	\image{lumiere.jpg}{Placement des matériaux}
+	\lstinputlisting[language=C++, firstline=6, lastline=14, caption=Configuration de la lumière]{bonus.txt}
+	Cette lumière est placée en hauteur et possède une lumière de type ponctuelle, nous avons dans ce cas un éclairage de type soleil. Pour les lumières localisées, il faudra déplacer la source lumineuse (qui peut être supplémentaire à celle déjà existante, en sachant qu'OpenGL gère huit lumières) et la définir comme une lumière de type directionelle (comme une lampe de chevet).
+	
+	\subsection{Texturer le terrain en utilisant des couleurs}
+	Pour colorer le terrain (ou du moins certains points), il faudrait déclarer un \lstinline{glColor3f(Rouge, Vert, Bleu)} si on utilisait des \lstinline{glBegin()}.\\
+	Dans le cas avec les VBO, il faudrait créer un buffer contenant les couleurs de chaque sommet dans la fonction d'initialisation de la géométrie, puis de les appliquer lors du dessin de l'élément.
+	
     	
 \end{document}
