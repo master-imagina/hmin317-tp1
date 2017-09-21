@@ -52,6 +52,10 @@
 
 #include <QVector2D>
 #include <QVector3D>
+#include <vector>
+#include <iostream>
+
+using namespace std;
 
 struct VertexData
 {
@@ -81,30 +85,38 @@ GeometryEngine::~GeometryEngine()
 //! [0]
 void GeometryEngine::initPlaneGeometry()
 {
-	//Point for triangle strip of 16 points
+	//Point for a plan of 16*16
 	VertexData vertices[16*16];
-	for(int i = 0;i<15;i++){
+	for(int i = 0;i<16;i++){
 		for(int j = 0;j<16;j++){
-			vertices[16*i+j] = {QVector3D(((float)i-8.0)/4.0, ((float)j-8.0)/4.0,  0.0f), QVector2D(0.0f, 0.0f)};
+			float x = (i%2)*0.33;
+			float y = (j%2)*0.5;
+			vertices[16*i+j] = {QVector3D(((float)i-8.0)/4.0, ((float)j-8.0)/4.0,0.0f), QVector2D(x, y)};
 		}
 	}
 	
-	GLushort indices[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 	
+	vector<GLushort> indices_vector;
 	for(int i = 0;i<15;i++){
 		//ajoute le premier point de la ligne
+		indices_vector.push_back(i*16);
 		for(int j = 0;j<16;j++){
-			//TODO add vertice indices 	
+			//TODO add vertice indices
+			indices_vector.push_back(i*16+j);
+			indices_vector.push_back((i+1)*16+j);
 		}
 		//ajoute le dernier point de la ligne
+		indices_vector.push_back((i+1)*16+15);
 	}
 	
+	GLushort *indices = &indices_vector[0];
+	
 	arrayBuf.bind();
-    arrayBuf.allocate(vertices, 16 * sizeof(VertexData));
+    arrayBuf.allocate(vertices, (16*16)*sizeof(VertexData));
 
     // Transfer index data to VBO 1
     indexBuf.bind();
-    indexBuf.allocate(indices, 16 * sizeof(GLushort));
+    indexBuf.allocate(indices, indices_vector.size() * sizeof(GLushort));
 	
 }
 
@@ -131,7 +143,7 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLE_STRIP, 16, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLE_STRIP, 15*2+15*16*2, GL_UNSIGNED_SHORT, 0);
 }
 
 void GeometryEngine::initCubeGeometry()
