@@ -225,5 +225,14 @@ void MainWidget::paintGL()
 }
 
 void MainWidget::keyPressEvent(QKeyEvent *e) {
-    std::cout << e->text().toStdString() << std::endl;
+    if (e->key() == Qt::Key_Escape)
+        std::exit(0);
+
+    //Reception des inputs
+    float _x = (int)(e->key() == Qt::Key_Right || e->key() == Qt::Key_D)  - (int)(e->key() == Qt::Key_Left || e->key() == Qt::Key_Q);
+    float _y = (int)(e->key() == Qt::Key_Up    || e->key() == Qt::Key_Z)  - (int)(e->key() == Qt::Key_Down || e->key() == Qt::Key_S);
+
+    glLoadIdentity(); //Reset de la matrice
+    glTranslatef(_x, _y, 0);
+    glFlush();
 }

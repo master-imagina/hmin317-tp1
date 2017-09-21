@@ -102,6 +102,8 @@
 	
 	\subsection{Déplacer la caméra à hauteur fixe}
 	Pour déplacer la caméra à hauteur fixe, on va devoir déplacer la caméra uniquement sur les axes x et y. On va devoir utiliser les matrices (et plus précisément des translations) pour faire bouger la caméra.\\
-	Dans un premier temps, nous allons devoir recréer la fonction \lstinline{keyPressEvent(QKeyEvent *e)} pour récupérer l'entrée clavier, et plus précisément la touche appuyée.
+	Dans un premier temps, nous allons devoir recréer la fonction \lstinline{keyPressEvent(QKeyEvent *e)} pour récupérer l'entrée clavier, et plus précisément la touche appuyée.\\
+	On va récuperer la touche appuyée avec \lstinline{e->key()}, auquel on fera une comparaison avec la touche voulue :
+	\lstinputlisting[language=C++, firstline=227, lastline=229, caption=Exemple où on regarde si la touche échappe est celle pressée]{../mainwidget.cpp}
     	
 \end{document}
