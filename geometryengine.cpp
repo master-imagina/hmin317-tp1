@@ -70,7 +70,8 @@ GeometryEngine::GeometryEngine()
     indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
-    initCubeGeometry();
+    //initCubeGeometry();
+    initPlaneGeometry();
 }
 
 GeometryEngine::~GeometryEngine()
@@ -175,5 +176,73 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
 
     // Draw cube geometry using indices from VBO 1
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
+}
+
+void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
+{
+    // Tell OpenGL which VBOs to use
+    arrayBuf.bind();
+    indexBuf.bind();
+
+    // Offset for position
+    quintptr offset = 0;
+
+    // Tell OpenGL programmable pipeline how to locate vertex position data
+    int vertexLocation = program->attributeLocation("a_position");
+    program->enableAttributeArray(vertexLocation);
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+    // Offset for texture coordinate
+    offset += sizeof(QVector3D);
+
+    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
+    int texcoordLocation = program->attributeLocation("a_texcoord");
+    program->enableAttributeArray(texcoordLocation);
+    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+    // Draw cube geometry using indices from VBO 1
+    glDrawElements(GL_TRIANGLES, 15 * 15 * 6, GL_UNSIGNED_SHORT, 0);
+}
+
+void GeometryEngine::initPlaneGeometry()
+{
+    VertexData *vertices = new VertexData[16 * 16];
+    GLushort *indices    = new GLushort[15 * 15 * 6]{0};
+
+    // On dessine les 15 lignes de rectangles
+    for(uint y = 0; y < 16; ++y)
+    {
+        // On définit nos sommets
+        for(uint x = 0; x < 16; ++x)
+        {
+            float posX = 0.125f * (float)x - 1.f;
+            float posY = 0.125f * (float)y - 1.f;
+            vertices[x + y * 16] = {QVector3D(posX, posY,  0.0f), QVector2D((float)x / 15.0f, (float)y / 15.0f)};
+        }
+    }
+
+    // On trouve les indices
+    for(uint y = 0; y < 15; ++y) // 15 lignes de rectangle
+    {
+        // On définit nos sommets
+        for(uint x = 0; x < 15; ++x) // 15 rectangle par lignes
+        {
+            indices[x * 6 + y * 15 * 6]     = (x + 1) + (y + 1) * 16;
+            indices[x * 6 + y * 15 * 6 + 1] = x + (y + 1) * 16;
+            indices[x * 6 + y * 15 * 6 + 2] = x + y * 16;
+
+            indices[x * 6 + y * 15 * 6 + 3] = x + y * 16;
+            indices[x * 6 + y * 15 * 6 + 4] = (x + 1) + y * 16;
+            indices[x * 6 + y * 15 * 6 + 5] = (x + 1) + (y + 1) * 16;
+        }
+    }
+
+    // Transfer vertex data to VBO 0
+    arrayBuf.bind();
+    arrayBuf.allocate(vertices, 16 * 16 * sizeof(VertexData));
+
+    // Transfer index data to VBO 1
+    indexBuf.bind();
+    indexBuf.allocate(indices, 15 * 15 * 6 * sizeof(GLushort));
 }
 //! [2]

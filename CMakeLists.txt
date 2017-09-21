@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(tp1)
 
+set(CMAKE_CXX_STANDARD 14)
+
 # Sources
 set(SRC_FILES main.cpp mainwidget.cpp mainwidget.h geometryengine.cpp geometryengine.h)
 
