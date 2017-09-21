@@ -120,7 +120,6 @@ void MainWidget::keyPressEvent(QKeyEvent *e)
         default:
             e->ignore();
     }
-    update();
 }
 
 void MainWidget::keyReleaseEvent(QKeyEvent *e)
@@ -155,7 +154,6 @@ void MainWidget::keyReleaseEvent(QKeyEvent *e)
         default:
             e->ignore();
     }
-    update();
 }
 
 
@@ -221,6 +219,10 @@ void MainWidget::initializeGL()
     // glEnable(GL_CULL_FACE);
 
 
+
+
+
+
     geometries = new GeometryEngine;
 
     // Use QBasicTimer because its faster than QTimer
@@ -273,7 +275,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 30.0, fov = 45.0;
+    const qreal zNear = 0.1, zFar = 30.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -288,6 +290,8 @@ void MainWidget::paintGL()
     // Clear color and depth buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+
     texture->bind();
 
 
@@ -295,6 +299,8 @@ void MainWidget::paintGL()
     QMatrix4x4 matrix;
     matrix.translate(fPositionX, fPositionY, fPositionZ);
     matrix.rotate(rotation);
+
+
 
     // Set modelview-projection matrix
     program.setUniformValue("mvp_matrix", projection * matrix);
