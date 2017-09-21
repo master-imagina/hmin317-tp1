@@ -108,11 +108,11 @@ void MainWidget::keyPressEvent(QKeyEvent *event)
     switch(event->key())
     {
         case Qt::Key_Up:
-            camEye.setZ(camEye.z() + speed);
+            camEye.setZ(camEye.z() - speed);
             break;
 
         case Qt::Key_Down:
-            camEye.setZ(camEye.z() - speed);
+            camEye.setZ(camEye.z() + speed);
             break;
     }
 
