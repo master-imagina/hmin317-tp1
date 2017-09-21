@@ -91,6 +91,8 @@
 	\pagebreak
 	\section{Question 3}
 	\subsection{Création d'une surface plane}
-	  Pour créer une surface plane, il faut créer une surface en deux dimentions, dans ce cas il faut mettre un des axes à 0. Dans mon cas, je vais mettre la valeur de l'axe z à 0.
+	  Pour créer une surface plane, il faut créer une surface en deux dimentions, dans ce cas il faut mettre un des axes à 0. Dans mon cas, je vais mettre la valeur de l'axe z à 0. La création de la surface plane se fera dans la fonction \lstinline{void GeometryEngine::initPlaneGeometry()}. Dans un premier temps, on va recenser les vertices :
+	  \lstinputlisting[language=C++, firstline=195, lastline=219, caption=Création des points]{../geometryengine.cpp}
+	  Puis on enverra les données, comme effectué pour le cube.
     	
 \end{document}

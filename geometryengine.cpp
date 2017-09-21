@@ -225,9 +225,9 @@ void GeometryEngine::initPlaneGeometry()
     // connecting strips have same vertex order then only last
     // index of the first strip needs to be duplicated.
     GLushort indices[] = {
-            0,  4,  1,  5,  2,  6,  3,  7,  7,      // Face 0 - triangle strip (0 4 1 5 2 6 3 7)
-            4,  4,  8,  5,  9,  6, 10,  7, 11, 11,      // Face 1 - triangle strip (4 8 5 9 6 10 7 11)
-            8,  8, 12,  9, 13, 10, 14, 11, 15, 15    // Face 2 - triangle strip (8 12 9 13 10 14 11 15)
+            0,  4,  1,  5,  2,  6,  3,  7,  7,     // Face 0 - triangle strip (0 4 1 5 2 6 3 7)
+            4,  4,  8,  5,  9,  6, 10,  7, 11, 11, // Face 1 - triangle strip (4 8 5 9 6 10 7 11)
+            8,  8, 12,  9, 13, 10, 14, 11, 15, 15  // Face 2 - triangle strip (8 12 9 13 10 14 11 15)
     };
 
     // Transfer vertex data to VBO 0
@@ -262,5 +262,5 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLE_STRIP, 29, GL_UNSIGNED_SHORT, 0);
 }
