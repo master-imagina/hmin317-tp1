@@ -61,8 +61,8 @@ MainWidget::MainWidget(QWidget *parent) :
     m_shaderProgram(),
     m_geometries(nullptr),
     m_texture(nullptr),
-    m_eyeVec(5, 5, 5),
-    m_targetVec(0, 0.2, 0),
+    m_eyePos(8, 20, 8),
+    m_targetPos(8, 0, 8),
     m_upVec(0, 0, 1),
     m_projectionMatrix(),
     m_cameraController(new CameraController(this))
@@ -148,10 +148,10 @@ void MainWidget::paintGL()
     m_texture->bind();
 
     // Calculate view transformation
-    m_cameraController->updateViewMatrix(m_eyeVec, m_targetVec, m_upVec);
+    m_cameraController->updateViewMatrix(m_eyePos, m_targetPos, m_upVec);
 
     m_viewMatrix.setToIdentity();
-    m_viewMatrix.lookAt(m_eyeVec, m_targetVec, m_upVec);
+    m_viewMatrix.lookAt(m_eyePos, m_targetPos, m_upVec);
 
     // Send uniforms to shaders
     m_shaderProgram.setUniformValue("mvp_matrix",
@@ -159,5 +159,5 @@ void MainWidget::paintGL()
     m_shaderProgram.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    m_geometries->drawCubeGeometry(&m_shaderProgram);
+    m_geometries->drawTerrainGeometry(&m_shaderProgram);
 }

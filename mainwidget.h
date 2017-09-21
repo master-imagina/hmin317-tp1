@@ -93,8 +93,8 @@ private:
 
     QOpenGLTexture *m_texture;
 
-    QVector3D m_eyeVec;
-    QVector3D m_targetVec;
+    QVector3D m_eyePos;
+    QVector3D m_targetPos;
     QVector3D m_upVec;
     QMatrix4x4 m_viewMatrix;
 
