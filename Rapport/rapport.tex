@@ -1,0 +1,139 @@
+% Document description
+\documentclass[a4paper,11pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[francais]{babel}
+\usepackage{listings}
+\usepackage{graphicx} %Pour inclure les images
+\usepackage{float} %Pour plus de précision sur le placement
+\usepackage{color}
+\usepackage[hidelinks]{hyperref} %Pour les liens dans le PDF
+\usepackage{fancyhdr} %En-tête + pieds de page
+\usepackage{lastpage}
+
+% Metadata
+\title{HMIN317 - Moteur de jeux \\ Compte-rendu TP1}
+\author{BOYER Benoît}
+\date{Septembre 2017}
+
+\input{css.tex}
+
+
+% --------------> Document beginning <--------------
+\begin{document}
+  %Pattern de Peter Wilson
+  \begin{titlepage} % Suppresses displaying the page number on the title page and the subsequent page counts as page 1
+	
+	  \raggedleft % Right align the title page
+	
+	  \rule{1pt}{\textheight} % Vertical line
+	  \hspace{0.05\textwidth} % Whitespace between the vertical line and title page text
+	  \parbox[b]{0.75\textwidth}{ % Paragraph box for holding the title page text, adjust the width to move the title page left or right on the page
+		
+		  {\Huge\bfseries Compte-rendu TP1 \\[0.5\baselineskip] Prise en main de Qt Creator, Git et OpenGL ES 2.0}\\[2\baselineskip] % Title
+		  {\large\textit{HMIN317 - Moteurs de jeux}}\\[4\baselineskip] % Subtitle or further description
+		  {\Large\textsc{BOYER Benoît}} % Author name, lower case for consistent small caps
+		
+		  \vspace{0.5\textheight} % Whitespace between the title block and the publisher
+		
+		  {\noindent M2 IMAGINA - Septembre 2017}\\[\baselineskip] % Publisher and logo
+	  }
+
+  \end{titlepage}
+  
+    \tableofcontents
+    \pagebreak
+
+    \section{Question 1}
+    \subsection{A quoi servent les classes MainWidget et GeometryEngine ?}
+    La classe MainWidget sert à gérer l'affichage et les évènements du programme, en effet si on se fie aux foncions présentes dans le .h :
+    \lstinputlisting[language=C++, caption=Fonctions de la classe MainWidget, firstline=75, lastline=85]{../mainwidget.h}
+    Les fonctions dans l'ordre permettent :
+    \begin{itemize}
+    	\item De gérer le clic souris
+    	\item De gérer le relachement du clic souris
+    	\item De gérer le temps (et faire un mouvement continu, comme par exemple attrapper le cube et lui inculquer un mouvement pour qu'il continue et ralentisse sur le temps)
+    	\item D'initialiser la fenêtre OpenGL
+    	\item De gérer la modification de la taille de la fenêtre
+    	\item De redessiner et mettre à jour le contenu de la fenêtre OpenGL
+    	\item D'initialiser les shaders
+    	\item D'initialiser les textures (donc les charger et de les préparer pour les utiliser plus tard)
+    \end{itemize}   
+    \hfill \break
+	La classe GeometryEngine est utilisée pour la géométrie du dé présent :
+    \lstinputlisting[language=C++, caption=Fonctions de la classe GeometryEngine, firstline=64, lastline=67]{../geometryengine.h}
+    Les fonctions présentes servent à dessiner et à initialiser le cube qui, une fois texturé, sera le dé à la fenêtre.
+
+    \pagebreak
+    \subsection{A quoi servent les fichiers fshader.glsl et vshader.glsl ?}
+    Les fichiers sont dans l'ordre le {\it{fragment shader}} et le {\it{vertex shader}}. Le fragment shader va servir à appliquer la bonne couleur au pixel (en se basant sur la texture fournie), tandis que le vertex shader va calculer la position des vertices par rapport à la fenêtre.
+	
+	\pagebreak
+	\section{Question 2}
+	\subsection{Expliquer le fonctionnement des deux fonctions de la classe CubeGeometry.}
+	    La fonction {\lstinline{void initCubeGeometry()}} permet d'initialiser le cube en créant dans un premier temps les vertices du cube :
+    \lstinputlisting[language=C++, firstline=90, lastline=101, caption=Création de deux faces du cube]{../geometryengine.cpp}
+    Pour ensuite dans un second temps, recenser les indices pour faire les triangles des faces des cubes :
+    \lstinputlisting[language=C++, firstline=135, lastline=142, caption=Création des indices]{../geometryengine.cpp}
+    \pagebreak
+    
+    Et pour terminer, on transfère les données au GPU via des buffers :
+    \lstinputlisting[language=C++, firstline=145, lastline=151, caption=Transfert des données via un VBO]{../geometryengine.cpp}
+    Une fois terminé, la fonction {\lstinline{void drawCubeGeometry(QOpenGLShaderProgram *program)}} doit être utilisée pour dessiner le cube.\\ \\*
+    Dans un premier temps, on va indiquer à OpenGL quels VBO ({\it{vertex shaders}}) utiliser :
+    \lstinputlisting[language=C++, firstline=158, lastline=160, caption=Selection des VBO]{../geometryengine.cpp}
+    Ensuite, on indique au pointeur le début du VBO, puis le lieu des données :
+    \lstinputlisting[language=C++, firstline=162, lastline=168, caption=Indication aux vshader des données]{../geometryengine.cpp}
+    \pagebreak
+    
+    Ensuite, on indique où se trouve les coordonnées pour les textures dans la mémoire, puis on la donne au buffer :
+    \lstinputlisting[language=C++, firstline=170, lastline=176, caption=Indication des coordonnées de texture]{../geometryengine.cpp}
+    
+    Et pour finir, on dessine le cube.
+    \lstinputlisting[language=C++, firstline=178, lastline=179, caption=Dessin du cube]{../geometryengine.cpp}
+	
+	\pagebreak
+	\section{Question 3}
+	\subsection{Création d'une surface plane}
+	  Pour créer une surface plane, il faut créer une surface en deux dimentions, dans ce cas il faut mettre un des axes à 0, ici ça sera l'axe z. La création de la surface plane se fera dans la fonction \lstinline{void GeometryEngine::initPlaneGeometry()}. Dans un premier temps, on va recenser les vertices :
+	  \lstinputlisting[language=C++, firstline=195, lastline=219, caption=Création des points]{../geometryengine.cpp}
+	  Puis on enverra les données, comme effectué pour le cube.
+	  \pagebreak
+	  
+	\section{Question 4}
+	\subsection{Modifier l'altitude des sommets pour effectuer un relief}
+	Il suffit juste de modifier la valeur z des sommets sur le terrain plat, ainsi en modifiant quelques valeurs nous pouvons obtenir un terrain comme le suivant :
+	\image{sommet.png}{Exemple d'un terrain avec relief}
+	
+	\subsection{Déplacer la caméra à hauteur fixe}
+	Pour déplacer la caméra à hauteur fixe, on va devoir déplacer la caméra uniquement sur les axes x et y, en incrémentant la valeur voulue selon la touche pressée.\\
+	Dans un premier temps, nous allons devoir recréer la fonction \lstinline{keyPressEvent(QKeyEvent *e)} pour récupérer l'entrée clavier, et plus précisément la touche appuyée.\\
+	On va récuperer la touche appuyée avec \lstinline{e->key()}, auquel on fera une comparaison avec la touche voulue :
+	\lstinputlisting[language=C++, firstline=227, lastline=229, caption=Exemple où on regarde si la touche Échap est celle pressée]{../mainwidget.cpp}
+	
+	\pagebreak
+	
+	Une fois qu'on peut récupérer les entrées utilisateurs, l'étape suivante est de pouvoir mettre les coordonnées en dynamique, pour cela on va modifier une ligne de la fonction \lstinline{void MainWidget::paintGL()} :
+	\lstinputlisting[language=C++, firstline=211, lastline=212, caption=La translation en x et y ont désormais une variable globale]{../mainwidget.cpp}
+	Ensuite, dans la fonction \lstinline{keyPressEvent(QKeyEvent *e)}, on va simplement incrémenter la globale selon l'entrée clavier :
+	\lstinputlisting[language=C++, firstline=231, lastline=238, caption=L'incrémentation de la position selon l'entrée utilisateur]{../mainwidget.cpp}
+	Suite à cette fonction, on peut déplacer la caméra en utilisant les flèches du clavier ou les touches ZQSD.
+	
+	\pagebreak
+	\section{Bonus}
+	A partir de cette question, tout le code implémenté et cité ne figure pas dans le programme final.
+	\subsection{Jouer avec la lumière}
+	Pour la lumière, le premier élément serait d'activer l'éclairage, puis d'allumer une lumière précise :
+	\lstinputlisting[language=C++, firstline=1, lastline=2, caption=Activation de la lumière]{bonus.txt}
+	Ensuite, il faudra appliquer un matériel plus poussé sur le plan, c'est à dire définir la couleur en spéculaire, ambiante et diffuse :
+	\image{lumiere.jpg}{Placement des matériaux}
+	\lstinputlisting[language=C++, firstline=6, lastline=14, caption=Configuration de la lumière]{bonus.txt}
+	Cette lumière est placée en hauteur et possède une lumière de type ponctuelle, nous avons dans ce cas un éclairage de type soleil. Pour les lumières localisées, il faudra déplacer la source lumineuse (qui peut être supplémentaire à celle déjà existante, en sachant qu'OpenGL gère huit lumières) et la définir comme une lumière de type directionelle (comme une lampe de chevet).
+	
+	\subsection{Texturer le terrain en utilisant des couleurs}
+	Pour colorer le terrain (ou du moins certains points), il faudrait déclarer un \lstinline{glColor3f(Rouge, Vert, Bleu)} si on utilisait des \lstinline{glBegin()}.\\
+	Dans le cas avec les VBO, il faudrait créer un buffer contenant les couleurs de chaque sommet dans la fonction d'initialisation de la géométrie, puis de les appliquer lors du dessin de l'élément.
+	
+    	
+\end{document}

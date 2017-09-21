@@ -51,8 +51,10 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
+#include <QKeyEvent>
 
 #include <math.h>
+#include <iostream>
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
@@ -132,10 +134,10 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 //! [2]
 
-    geometries = new GeometryEngine;
+    geometries = new GeometryEngine(true);
 
     // Use QBasicTimer because its faster than QTimer
     timer.start(12, this);
@@ -207,7 +209,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(posx, posy, -5.0);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -218,5 +220,21 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    //geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
+}
+
+void MainWidget::keyPressEvent(QKeyEvent *e) {
+    if (e->key() == Qt::Key_Escape)
+        std::exit(0);
+
+    //Reception des inputs
+    float _x = (float)(e->key() == Qt::Key_Right || e->key() == Qt::Key_D) - (float)(e->key() == Qt::Key_Left || e->key() == Qt::Key_Q);
+    float _y = (float)(e->key() == Qt::Key_Up    || e->key() == Qt::Key_Z) - (float)(e->key() == Qt::Key_Down || e->key() == Qt::Key_S);
+
+    posx += _x/10.f;
+    posy += _y/10.f;
+
+    update(); //Il faut mettre a jour la scene !
+
 }

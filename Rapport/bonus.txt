@@ -1,0 +1,17 @@
+glEnable(GL_LIGHTNING); //Activation de l'eclairage
+glEnable(GL_LIGHT0); //Activation de la lumiere 1
+
+----
+
+GLfloat Lum0Amb[4] = {.2, .2, .2, 1.}; //Materiau ambiant
+GLfloat Lum0Dif[4] = {1., 1., 1., 1.}; //Materiau diffuse
+GLfloat Lum0Spe[4] = {1., 1., 1., 1.}; //Materiau speculaire
+GLfloat Lum0Pos[4] = {0., 0., 5., 1.}; //Position de la lumiere
+
+glLightfv(GL_LIGHT0, GL_AMBIENT,  Lum0Amb}; //Application de la couleur ambiante
+glLightfv(GL_LIGHT0, GL_DIFFUSE,  Lum0Dif}; //Application de la couleur diffuse
+glLightfv(GL_LIGHT0, GL_SPECULAR, Lum0Spe}; //Application de la couleur speculaire
+glLightfv(GL_LIGHT0, GL_POSITION, Lum0Pos}; //Deplacement de la lumiere la position donnee
+
+----
+S
