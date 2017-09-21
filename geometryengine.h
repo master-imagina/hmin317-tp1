@@ -61,13 +61,15 @@ public:
     GeometryEngine();
     virtual ~GeometryEngine();
 
-    void drawCubeGeometry(QOpenGLShaderProgram *program);
+    void drawTerrainGeometry(QOpenGLShaderProgram *program);
 
 private:
-    void initCubeGeometry();
+    void initTerrainGeometry();
 
-    QOpenGLBuffer arrayBuf;
-    QOpenGLBuffer indexBuf;
+    QOpenGLBuffer m_arrayVbo;
+    QOpenGLBuffer m_indexVbo;
+
+    std::size_t m_terrainSize = 16;
 };
 
 #endif // GEOMETRYENGINE_H
