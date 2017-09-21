@@ -64,8 +64,8 @@ int main(int argc, char *argv[])
     format.setDepthBufferSize(24);
     QSurfaceFormat::setDefaultFormat(format);
 
-    app.setApplicationName("cube");
-    app.setApplicationVersion("0.1");
+    app.setApplicationName("TP1: Le cube");
+    app.setApplicationVersion("0.3");
 #ifndef QT_NO_OPENGL
     MainWidget widget;
     widget.show();
