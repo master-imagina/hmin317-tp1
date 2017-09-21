@@ -51,6 +51,7 @@
 #include "geometryengine.h"
 
 #include <cmath>
+#include <random>
 
 #include <QVector2D>
 #include <QVector3D>
@@ -83,7 +84,12 @@ void GeometryEngine::initTerrainGeometry()
 {
     // Vertices
     const std::size_t vertexCount = m_terrainSize * m_terrainSize;
-    static std::vector<VertexData> vertices(vertexCount);
+    std::vector<VertexData> vertices(vertexCount);
+
+    std::random_device rd;
+    std::default_random_engine re(rd());
+
+    std::uniform_int_distribution<int> heightDistrib(0, m_terrainSize - 1);
 
     for (std::size_t i = 0; i < vertices.size(); ++i) {
         const float iId = i % m_terrainSize;
@@ -91,13 +97,13 @@ void GeometryEngine::initTerrainGeometry()
 
         VertexData &vertex = vertices[i];
 
-        vertex.position = {iId, 0.f, fl};
+        vertex.position = {iId, static_cast<float>(heightDistrib(re)), fl};
         vertex.texCoord = {iId / 3.f, fl / 2.f};
     }
 
     // Indices
     const std::size_t indexCount = 3 * 2 * std::pow(m_terrainSize - 1, 2);
-    static std::vector<unsigned int> indices(indexCount);
+    std::vector<unsigned int> indices(indexCount);
 
     int indexCounter = 0;
 
