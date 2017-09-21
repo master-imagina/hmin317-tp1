@@ -84,6 +84,8 @@ protected:
     void initShaders();
     void initTextures();
 
+    void keyPressEvent(QKeyEvent *e) override;
+
 private:
     QBasicTimer timer;
     QOpenGLShaderProgram program;

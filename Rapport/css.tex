@@ -80,3 +80,12 @@
 \fancyfoot[L]{BOYER Benoît}
 \fancyfoot[C]{}
 \fancyfoot[R]{\textbf{Page \thepage \ sur \pageref{LastPage}}}
+
+%Pour afficher et charger des images
+\newcommand{\image}[2] {
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth]{#1}
+		\caption{#2}
+	\end{figure}
+}

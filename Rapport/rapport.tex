@@ -94,5 +94,14 @@
 	  Pour créer une surface plane, il faut créer une surface en deux dimentions, dans ce cas il faut mettre un des axes à 0. Dans mon cas, je vais mettre la valeur de l'axe z à 0. La création de la surface plane se fera dans la fonction \lstinline{void GeometryEngine::initPlaneGeometry()}. Dans un premier temps, on va recenser les vertices :
 	  \lstinputlisting[language=C++, firstline=195, lastline=219, caption=Création des points]{../geometryengine.cpp}
 	  Puis on enverra les données, comme effectué pour le cube.
+	  
+	\section{Question 4}
+	\subsection{Modifier l'altitude des sommets pour effectuer un relief}
+	Il suffit juste de modifier la valeur z des sommets sur le terrain plat, ainsi en modifiant quelques valeurs nous pouvons obtenir un terrain comme le suivant :
+	\image{sommet.png}{Exemple d'un terrain avec relief}
+	
+	\subsection{Déplacer la caméra à hauteur fixe}
+	Pour déplacer la caméra à hauteur fixe, on va devoir déplacer la caméra uniquement sur les axes x et y. On va devoir utiliser les matrices (et plus précisément des translations) pour faire bouger la caméra.\\
+	Dans un premier temps, nous allons devoir recréer la fonction \lstinline{keyPressEvent(QKeyEvent *e)} pour récupérer l'entrée clavier, et plus précisément la touche appuyée.
     	
 \end{document}

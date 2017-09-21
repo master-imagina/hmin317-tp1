@@ -51,8 +51,10 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
+#include <QKeyEvent>
 
 #include <math.h>
+#include <iostream>
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
@@ -220,4 +222,8 @@ void MainWidget::paintGL()
     // Draw cube geometry
     //geometries->drawCubeGeometry(&program);
     geometries->drawPlaneGeometry(&program);
+}
+
+void MainWidget::keyPressEvent(QKeyEvent *e) {
+    std::cout << e->text().toStdString() << std::endl;
 }
