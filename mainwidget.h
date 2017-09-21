@@ -75,6 +75,7 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void keyPressEvent(QKeyEvent *event) override;
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
@@ -97,6 +98,8 @@ private:
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+
+    QVector3D camEye, camCenter, camUp;
 };
 
 #endif // MAINWIDGET_H

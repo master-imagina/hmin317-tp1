@@ -58,7 +58,9 @@ MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
-    angularSpeed(0)
+    angularSpeed(0),
+    camEye(0, 0, -3.f),
+    camUp(0,1.f,0)
 {
 }
 
@@ -97,8 +99,28 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     // Increase angular speed
     angularSpeed += acc;
 }
-//! [0]
 
+void MainWidget::keyPressEvent(QKeyEvent *event)
+{
+    float speed = 0.1f;
+
+    // On avance
+    switch(event->key())
+    {
+        case Qt::Key_Up:
+            camEye.setZ(camEye.z() + speed);
+            break;
+
+        case Qt::Key_Down:
+            camEye.setZ(camEye.z() - speed);
+            break;
+    }
+
+    projection.lookAt(camEye, camCenter, camUp);
+    update();
+}
+
+//! [0]
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
 {
@@ -116,6 +138,7 @@ void MainWidget::timerEvent(QTimerEvent *)
         update();
     }
 }
+
 //! [1]
 
 void MainWidget::initializeGL()
@@ -140,7 +163,6 @@ void MainWidget::initializeGL()
     // Use QBasicTimer because its faster than QTimer
     timer.start(12, this);
 }
-
 //! [3]
 void MainWidget::initShaders()
 {
@@ -160,8 +182,8 @@ void MainWidget::initShaders()
     if (!program.bind())
         close();
 }
-//! [3]
 
+//! [3]
 //! [4]
 void MainWidget::initTextures()
 {
@@ -178,8 +200,8 @@ void MainWidget::initTextures()
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     texture->setWrapMode(QOpenGLTexture::Repeat);
 }
-//! [4]
 
+//! [4]
 //! [5]
 void MainWidget::resizeGL(int w, int h)
 {
@@ -195,6 +217,7 @@ void MainWidget::resizeGL(int w, int h)
     // Set perspective projection
     projection.perspective(fov, aspect, zNear, zFar);
 }
+
 //! [5]
 
 void MainWidget::paintGL()
