@@ -54,12 +54,16 @@
 
 #include <math.h>
 
+#include <iostream>
+
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
-    angularSpeed(0)
+    angularSpeed(0),
+    position(0.0, 0.0, -5.0)
 {
+
 }
 
 MainWidget::~MainWidget()
@@ -73,6 +77,17 @@ MainWidget::~MainWidget()
 }
 
 //! [0]
+void MainWidget::keyPressEvent(QKeyEvent *event) {
+    this->key_pressed.push_back(event->key());
+}
+void MainWidget::keyReleaseEvent(QKeyEvent *event) {
+    for (unsigned int i = 0, sz = this->key_pressed.size(); i < sz; i++) {
+        if (this->key_pressed[i] == event->key()) {
+            this->key_pressed.erase(this->key_pressed.begin() + i);
+            break;
+        }
+    }
+}
 void MainWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
@@ -115,6 +130,33 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
+
+    const float speed = 0.003;
+    bool need_update = false;
+    for (unsigned int i = 0, sz = this->key_pressed.size(); i < sz; i++) {
+        switch (this->key_pressed[i]) {
+        case Qt::Key_Up:
+            this->position.setY(this->position.y() - speed * this->elapsedTimer.elapsed());
+            update();
+            break;
+        case Qt::Key_Down:
+            this->position.setY(this->position.y() + speed * this->elapsedTimer.elapsed());
+            update();
+            break;
+        case Qt::Key_Left:
+            this->position.setX(this->position.x() + speed * this->elapsedTimer.elapsed());
+            update();
+            break;
+        case Qt::Key_Right:
+            this->position.setX(this->position.x() - speed * this->elapsedTimer.elapsed());
+            update();
+            break;
+        }
+    }
+    if (need_update)
+        update();
+
+    this->elapsedTimer.restart();
 }
 //! [1]
 
@@ -139,6 +181,8 @@ void MainWidget::initializeGL()
 
     // Use QBasicTimer because its faster than QTimer
     timer.start(12, this);
+
+    this->elapsedTimer.start();
 }
 
 //! [3]
@@ -207,7 +251,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(position);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -218,5 +262,6 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    //geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
 }
