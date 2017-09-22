@@ -67,6 +67,7 @@ public:
 private:
     void initCubeGeometry();
     void initPlaneGeometry();
+    float generateRand(int max);
 
     QOpenGLBuffer arrayBuf;
     QOpenGLBuffer indexBuf;

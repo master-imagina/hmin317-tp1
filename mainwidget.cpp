@@ -60,12 +60,12 @@ MainWidget::MainWidget(QWidget *parent) :
     texture(0),
     angularSpeed(0)
 {
-    fPositionX = 0.0;
-    fPositionY = 0.0;
-    fPositionZ = -5.0;
-    for (int i=0;i<10;i++)
+    PosX = -5.0;
+    PosY = -5.0;
+    PosZ = -15.0;
+    for(int i = 0; i < 10; i++)
     {
-        bKeys[i] = false;
+        Pression[i] = false;
     }
 }
 
@@ -109,34 +109,30 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 void MainWidget::keyPressEvent(QKeyEvent *e)
 {
     int key = e->key();
+
     switch (key)
     {
         case Qt::Key_Z:
-            e->accept();
-            bKeys[0] = true;
+            Pression[0] = true;
             break;
         case Qt::Key_S:
-            e->accept();
-            bKeys[1] = true;
+            Pression[1] = true;
             break;
         case Qt::Key_Q:
-            e->accept();
-            bKeys[2] = true;
+            Pression[2] = true;
             break;
         case Qt::Key_D:
-            e->accept();
-            bKeys[3] = true;
+            Pression[3] = true;
             break;
         case Qt::Key_A:
-            e->accept();
-            bKeys[4] = true;
+            Pression[4] = true;
             break;
         case Qt::Key_E:
-            e->accept();
-            bKeys[5] = true;
+            Pression[5] = true;
             break;
-        default:
-            e->ignore();
+        case Qt::Key_Escape:
+            exit(1);
+            break;
     }
     update();
 }
@@ -144,34 +140,27 @@ void MainWidget::keyPressEvent(QKeyEvent *e)
 void MainWidget::keyReleaseEvent(QKeyEvent *e)
 {
     int key = e->key();
+
     switch (key)
     {
         case Qt::Key_Z:
-            e->accept();
-            bKeys[0] = false;
+            Pression[0] = false;
             break;
         case Qt::Key_S:
-            e->accept();
-            bKeys[1] = false;
+            Pression[1] = false;
             break;
         case Qt::Key_Q:
-            e->accept();
-            bKeys[2] = false;
+            Pression[2] = false;
             break;
         case Qt::Key_D:
-            e->accept();
-            bKeys[3] = false;
+            Pression[3] = false;
             break;
         case Qt::Key_A:
-            e->accept();
-            bKeys[4] = false;
+            Pression[4] = false;
             break;
         case Qt::Key_E:
-            e->accept();
-            bKeys[5] = false;
+            Pression[5] = false;
             break;
-        default:
-            e->ignore();
     }
     update();
 }
@@ -180,21 +169,34 @@ void MainWidget::keyReleaseEvent(QKeyEvent *e)
 void MainWidget::timerEvent(QTimerEvent *)
 {
     // Decrease angular speed (friction)
-    angularSpeed *= 0.99;
+    angularSpeed *= 0.8;
 
     // Stop rotation when speed goes below threshold
-    if (angularSpeed < 0.01) {
+    if (angularSpeed < 0.01)
         angularSpeed = 0.0;
-    } else {
+    else
+    {
         // Update rotation
-        rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation; }
+        rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
+    }
 
-        if (bKeys[0]) fPositionY -= 0.1;
-        if (bKeys[1]) fPositionY += 0.1;
-        if (bKeys[2]) fPositionX += 0.1;
-        if (bKeys[3]) fPositionX -= 0.1;
-        if (bKeys[4]) fPositionZ += 0.1;
-        if (bKeys[5]) fPositionZ -= 0.1;
+        if (Pression[0])
+            PosY -= 0.1;
+
+        if (Pression[1])
+            PosY += 0.1;
+
+        if (Pression[2])
+            PosX += 0.1;
+
+        if (Pression[3])
+            PosX -= 0.1;
+
+        if (Pression[4])
+            PosZ += 0.1;
+
+        if (Pression[5])
+            PosZ -= 0.1;
 
         // Request an update
         update();
@@ -249,7 +251,7 @@ void MainWidget::initShaders()
 void MainWidget::initTextures()
 {
     // Load cube.png image
-    texture = new QOpenGLTexture(QImage(":/rock.png").mirrored());
+    texture = new QOpenGLTexture(QImage(":/wall.jpg").mirrored());
 
     // Set nearest filtering mode for texture minification
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
@@ -290,8 +292,8 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(fPositionX, fPositionY, fPositionZ);
-    //matrix.rotate(rotation);
+    matrix.translate(PosX, PosY, PosZ);
+    matrix.rotate(rotation);
 
     // Set modelview-projection matrix
     program.setUniformValue("mvp_matrix", projection * matrix);

@@ -100,10 +100,10 @@ private:
     qreal angularSpeed;
     QQuaternion rotation;
 
-    float fPositionX;
-    float fPositionY;
-    float fPositionZ;
-    bool bKeys[10];
+    float PosX;
+    float PosY;
+    float PosZ;
+    bool Pression[10];
 };
 
 #endif // MAINWIDGET_H

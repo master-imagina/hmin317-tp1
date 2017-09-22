@@ -152,66 +152,79 @@ void GeometryEngine::initCubeGeometry()
 
 void GeometryEngine::initPlaneGeometry()
 {
-    int faces = 16;
-    int nb_faces = faces*faces;
-    VertexData vertices[nb_faces * 4];
+    int faces = 16; //nombre de face sur une ligne
+    int nb_faces = faces*faces; //nimbre de face total (ligne * colonne)
+    VertexData vertices[nb_faces * 4]; // *4 car chaque face est composé de 4 sommets
 
-    float x = 0, y = 0;
-    int vert = 0, iterator = 0;
-    while(iterator < nb_faces) {
-    float z = 0;
-        //Départ
-        if(x == 0 && y == 0)
+    int x = 0;
+    int y = 0;
+    int i = 0;
+    int hauteur_max = 2;
+    int iterator = 0;
+
+    //tant que l'on a pas fais toute les faces
+    while(iterator < nb_faces)
+    {
+        if(x == 0 && y == 0)//si c'est la première face
         {
-            vertices[vert + 0] = {QVector3D(x, y, 0), QVector2D(0.0f, 0.0f)};
-            vertices[vert + 1] = {QVector3D(x + 1, y, 0), QVector2D(0.33f, 0.0f)};
-            vertices[vert + 2] = {QVector3D(x, y + 1, 0), QVector2D(0.0f, 0.5f)};
-            vertices[vert + 3] = {QVector3D(x + 1, y + 1, 0), QVector2D(0.33f, 0.5f)};
+            vertices[i + 0] = {QVector3D(x, y, generateRand(hauteur_max)), QVector2D(0.0f, 0.0f)};              // 3---4
+            vertices[i + 1] = {QVector3D(x + 1, y, generateRand(hauteur_max)), QVector2D(0.33f, 0.0f)};         // -   -
+            vertices[i + 2] = {QVector3D(x, y + 1, generateRand(hauteur_max)), QVector2D(0.0f, 0.5f)};          // -   -
+            vertices[i + 3] = {QVector3D(x + 1, y + 1, generateRand(hauteur_max)), QVector2D(0.33f, 0.5f)};     // 1---2
         }
-        else if ( x != 0 && y == 0 )
-        { //Première ligne
-            vertices[vert + 0] = {QVector3D(vertices[vert - 3].position), QVector2D(0.0f, 0.0f)};
-            vertices[vert + 1] = {QVector3D(x + 1, y, 0), QVector2D(0.33f, 0.0f)};
-            vertices[vert + 2] = {QVector3D(vertices[vert - 1].position), QVector2D(0.0f, 0.5f)};
-            vertices[vert + 3] = {QVector3D(x + 1, y + 1, 0), QVector2D(0.33f, 0.5f)};
+        else if ( x != 0 && y == 0 )// sinon si on est sur la première ligne
+        {
+            vertices[i + 0] = {QVector3D(vertices[i - 3].position), QVector2D(0.0f, 0.0f)};
+            vertices[i + 1] = {QVector3D(x + 1, y, generateRand(hauteur_max)), QVector2D(0.33f, 0.0f)};
+            vertices[i + 2] = {QVector3D(vertices[i - 1].position), QVector2D(0.0f, 0.5f)};
+            vertices[i + 3] = {QVector3D(x + 1, y + 1, generateRand(hauteur_max)), QVector2D(0.33f, 0.5f)};
         }
-        else if ( x == 0 && y != 0)
-        { //Première colonne
-            vertices[vert + 0] = {QVector3D(vertices[( (int) y - 1) * faces * 4 + 2 + 4 * (int) x].position), QVector2D(0.0f, 0.0f)};
-            vertices[vert + 1] = {QVector3D(vertices[( (int) y - 1) * faces * 4 + 3 + 4 * (int) x].position), QVector2D(0.33f, 0.0f)};
-            vertices[vert + 2] = {QVector3D(x, y + 1, 0), QVector2D(0.0f, 0.5f)};
-            vertices[vert + 3] = {QVector3D(x + 1, y + 1, 0), QVector2D(0.33f, 0.5f)};
+        else if ( x == 0 && y != 0)// sinon si on est sur la première colonne
+        {
+            vertices[i + 0] = {QVector3D(vertices[(y - 1) * faces * 4 + 2 + 4 * x].position), QVector2D(0.0f, 0.0f)};
+            vertices[i + 1] = {QVector3D(vertices[(y - 1) * faces * 4 + 3 + 4 * x].position), QVector2D(0.33f, 0.0f)};
+            vertices[i + 2] = {QVector3D(x, y + 1, generateRand(hauteur_max)), QVector2D(0.0f, 0.5f)};
+            vertices[i + 3] = {QVector3D(x + 1, y + 1, generateRand(hauteur_max)), QVector2D(0.33f, 0.5f)};
         }
         else
-        { //Le reste
-            vertices[vert + 0] = {QVector3D(vertices[vert - 3].position), QVector2D(0.0f, 0.0f)};
-            vertices[vert + 1] = {QVector3D(vertices[( (int) y - 1) * faces * 4 + 3 + 4 * (int) x].position), QVector2D(0.33f, 0.0f)};
-            vertices[vert + 2] = {QVector3D(vertices[vert - 1].position), QVector2D(0.0f, 0.5f)};
-            vertices[vert + 3] = {QVector3D(x + 1, y + 1, 0), QVector2D(0.33f, 0.5f)};
+        {
+            vertices[i + 0] = {QVector3D(vertices[i - 3].position), QVector2D(0.0f, 0.0f)};
+            vertices[i + 1] = {QVector3D(vertices[(y - 1) * faces * 4 + 3 + 4 * x].position), QVector2D(0.33f, 0.0f)};
+            vertices[i + 2] = {QVector3D(vertices[i - 1].position), QVector2D(0.0f, 0.5f)};
+            vertices[i + 3] = {QVector3D(x + 1, y + 1, generateRand(hauteur_max)), QVector2D(0.33f, 0.5f)};
         }
 
         x++;
 
-        if( x == faces ) {
-            x = 0; y++;
+        //si on est arrivé au bout de la ligne alors
+        //on revient au début et on passe à la ligne suivante
+        if(x == faces)
+        {
+            x = 0;
+            y++;
         }
 
-        vert += 4; iterator++;
+        i += 4;
+
+        //on l'incrémente car on vient de faire une face
+        iterator++;
     }
 
-    const int taille_tableau_indice = nb_faces * 4 + nb_faces * 2 - 2; //4 * 256 + 256 * 2 - 2;
+    int taille_tableau_indice = nb_faces * 4 + nb_faces * 2 - 2; //4 * 256 + 256 * 2 - 2;
     GLushort indices[taille_tableau_indice] = {0};
 
     int q = 0;
-    for (int i = 0 ; i < taille_tableau_indice; i += 6) {
-        indices[i + 0] = q++;
-        indices[i + 1] = q++;
-        indices[i + 2] = q++;
-        indices[i + 3] = q;
+    for (int j = 0; j < taille_tableau_indice; j += 6)
+    {
+        indices[j + 0] = q++;
+        indices[j + 1] = q++;
+        indices[j + 2] = q++;
+        indices[j + 3] = q;
 
-        if(i < taille_tableau_indice - 6) {
-            indices[i + 4] = q++;
-            indices[i + 5] = q;
+        if(j < (taille_tableau_indice - 6))
+        {
+            indices[j + 4] = q++;
+            indices[j + 5] = q;
         }
 
     }
@@ -279,4 +292,9 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
 
     // Draw cube geometry using indices from VBO 1
     glDrawElements(GL_TRIANGLE_STRIP, 3000, GL_UNSIGNED_SHORT, 0);
+}
+
+float GeometryEngine::generateRand(int max)
+{
+    return static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / max));
 }
