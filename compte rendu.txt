@@ -1,0 +1,41 @@
+Compte Rendu TP1
+Tristan Cossin
+
+
+Question 1:
+
+	->MainWidget: sert à la gestion des évènements, des textures, du temps, ...
+	->GeometryEngine: sert à la création du cube et à le dessiner
+
+	->fshader.glsl: sert à déclarer la texture à appliquer sur l'objet
+	->vshader.glsl: sert a calculer la position des sommets dans l'espace et à lui appliquer la texture
+
+Question 2:
+
+	->void	GeometryEngine::initCubeGeometry()
+		crée les faces du cube en déclarant à la mains tous les points et segments
+		et le mets dans un buffer les coordonnées des points et dans un autres les indices
+		des sommets des faces
+
+	->void	GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram	*program)
+		sert à dessiner le cube et lui applique la texture
+
+Question 3:
+
+Question 4:
+
+	->Altitude des sommets: on passe par une fonction qui choisi une taille compris entre 0 et
+		la taille max défini à l'avance de manière aléatoire pour chacun des sommets 
+		de la surface
+
+	->Gestion de la caméra: on passe par les fonctions "keyPressEvent" et "keyReleaseEvent" qui
+		enregistre dans un tableau de boolean si la touche est préssé ou pas, se qui permet
+		en passant par la fonction "timerEvent" de se déplacer de manière continue ou pas
+
+Bonus:
+
+	->Lumière: il faudrait commencer par activer les lumières d'OpenGL, puis ensuite on les 		paramètres, les places et les orientes afin d'obtenir le résultat voulu
+
+	->Texture: pour colorier le terrain en fonction des hauteur, il suffit de regarder la hauteur
+		de chaque sommet, et si il est suffisament élevé alors pour toutes les faces
+		partageant ce meme sommet ont les colorie en blanc

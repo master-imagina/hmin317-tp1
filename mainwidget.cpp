@@ -60,6 +60,13 @@ MainWidget::MainWidget(QWidget *parent) :
     texture(0),
     angularSpeed(0)
 {
+    PosX = -5.0;
+    PosY = -5.0;
+    PosZ = -15.0;
+    for(int i = 0; i < 10; i++)
+    {
+        Pression[i] = false;
+    }
 }
 
 MainWidget::~MainWidget()
@@ -99,22 +106,100 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 }
 //! [0]
 
+void MainWidget::keyPressEvent(QKeyEvent *e)
+{
+    int key = e->key();
+
+    switch (key)
+    {
+        case Qt::Key_Z:
+            Pression[0] = true;
+            break;
+        case Qt::Key_S:
+            Pression[1] = true;
+            break;
+        case Qt::Key_Q:
+            Pression[2] = true;
+            break;
+        case Qt::Key_D:
+            Pression[3] = true;
+            break;
+        case Qt::Key_A:
+            Pression[4] = true;
+            break;
+        case Qt::Key_E:
+            Pression[5] = true;
+            break;
+        case Qt::Key_Escape:
+            exit(1);
+            break;
+    }
+    update();
+}
+
+void MainWidget::keyReleaseEvent(QKeyEvent *e)
+{
+    int key = e->key();
+
+    switch (key)
+    {
+        case Qt::Key_Z:
+            Pression[0] = false;
+            break;
+        case Qt::Key_S:
+            Pression[1] = false;
+            break;
+        case Qt::Key_Q:
+            Pression[2] = false;
+            break;
+        case Qt::Key_D:
+            Pression[3] = false;
+            break;
+        case Qt::Key_A:
+            Pression[4] = false;
+            break;
+        case Qt::Key_E:
+            Pression[5] = false;
+            break;
+    }
+    update();
+}
+
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
 {
     // Decrease angular speed (friction)
-    angularSpeed *= 0.99;
+    angularSpeed *= 0.8;
 
     // Stop rotation when speed goes below threshold
-    if (angularSpeed < 0.01) {
+    if (angularSpeed < 0.01)
         angularSpeed = 0.0;
-    } else {
+    else
+    {
         // Update rotation
         rotation = QQuaternion::fromAxisAndAngle(rotationAxis, angularSpeed) * rotation;
+    }
+
+        if (Pression[0])
+            PosY -= 0.1;
+
+        if (Pression[1])
+            PosY += 0.1;
+
+        if (Pression[2])
+            PosX += 0.1;
+
+        if (Pression[3])
+            PosX -= 0.1;
+
+        if (Pression[4])
+            PosZ += 0.1;
+
+        if (Pression[5])
+            PosZ -= 0.1;
 
         // Request an update
         update();
-    }
 }
 //! [1]
 
@@ -166,7 +251,7 @@ void MainWidget::initShaders()
 void MainWidget::initTextures()
 {
     // Load cube.png image
-    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
+    texture = new QOpenGLTexture(QImage(":/wall.jpg").mirrored());
 
     // Set nearest filtering mode for texture minification
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
@@ -187,7 +272,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 0.1, zFar = 30.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -207,7 +292,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(PosX, PosY, PosZ);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -218,5 +303,5 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
 }

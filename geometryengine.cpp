@@ -70,7 +70,7 @@ GeometryEngine::GeometryEngine()
     indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
-    initCubeGeometry();
+    initPlaneGeometry();
 }
 
 GeometryEngine::~GeometryEngine()
@@ -150,6 +150,96 @@ void GeometryEngine::initCubeGeometry()
 //! [1]
 }
 
+void GeometryEngine::initPlaneGeometry()
+{
+    int faces = 16; //nombre de face sur une ligne
+    int nb_faces = faces*faces; //nimbre de face total (ligne * colonne)
+    VertexData vertices[nb_faces * 4]; // *4 car chaque face est composé de 4 sommets
+
+    int x = 0;
+    int y = 0;
+    int i = 0;
+    int hauteur_max = 2;
+    int iterator = 0;
+
+    //tant que l'on a pas fais toute les faces
+    while(iterator < nb_faces)
+    {
+        if(x == 0 && y == 0)//si c'est la première face
+        {
+            vertices[i + 0] = {QVector3D(x, y, generateRand(hauteur_max)), QVector2D(0.0f, 0.0f)};              // 3---4
+            vertices[i + 1] = {QVector3D(x + 1, y, generateRand(hauteur_max)), QVector2D(0.33f, 0.0f)};         // -   -
+            vertices[i + 2] = {QVector3D(x, y + 1, generateRand(hauteur_max)), QVector2D(0.0f, 0.5f)};          // -   -
+            vertices[i + 3] = {QVector3D(x + 1, y + 1, generateRand(hauteur_max)), QVector2D(0.33f, 0.5f)};     // 1---2
+        }
+        else if ( x != 0 && y == 0 )// sinon si on est sur la première ligne
+        {
+            vertices[i + 0] = {QVector3D(vertices[i - 3].position), QVector2D(0.0f, 0.0f)};
+            vertices[i + 1] = {QVector3D(x + 1, y, generateRand(hauteur_max)), QVector2D(0.33f, 0.0f)};
+            vertices[i + 2] = {QVector3D(vertices[i - 1].position), QVector2D(0.0f, 0.5f)};
+            vertices[i + 3] = {QVector3D(x + 1, y + 1, generateRand(hauteur_max)), QVector2D(0.33f, 0.5f)};
+        }
+        else if ( x == 0 && y != 0)// sinon si on est sur la première colonne
+        {
+            vertices[i + 0] = {QVector3D(vertices[(y - 1) * faces * 4 + 2 + 4 * x].position), QVector2D(0.0f, 0.0f)};
+            vertices[i + 1] = {QVector3D(vertices[(y - 1) * faces * 4 + 3 + 4 * x].position), QVector2D(0.33f, 0.0f)};
+            vertices[i + 2] = {QVector3D(x, y + 1, generateRand(hauteur_max)), QVector2D(0.0f, 0.5f)};
+            vertices[i + 3] = {QVector3D(x + 1, y + 1, generateRand(hauteur_max)), QVector2D(0.33f, 0.5f)};
+        }
+        else
+        {
+            vertices[i + 0] = {QVector3D(vertices[i - 3].position), QVector2D(0.0f, 0.0f)};
+            vertices[i + 1] = {QVector3D(vertices[(y - 1) * faces * 4 + 3 + 4 * x].position), QVector2D(0.33f, 0.0f)};
+            vertices[i + 2] = {QVector3D(vertices[i - 1].position), QVector2D(0.0f, 0.5f)};
+            vertices[i + 3] = {QVector3D(x + 1, y + 1, generateRand(hauteur_max)), QVector2D(0.33f, 0.5f)};
+        }
+
+        x++;
+
+        //si on est arrivé au bout de la ligne alors
+        //on revient au début et on passe à la ligne suivante
+        if(x == faces)
+        {
+            x = 0;
+            y++;
+        }
+
+        i += 4;
+
+        //on l'incrémente car on vient de faire une face
+        iterator++;
+    }
+
+    int taille_tableau_indice = nb_faces * 4 + nb_faces * 2 - 2; //4 * 256 + 256 * 2 - 2;
+    GLushort indices[taille_tableau_indice] = {0};
+
+    int q = 0;
+    for (int j = 0; j < taille_tableau_indice; j += 6)
+    {
+        indices[j + 0] = q++;
+        indices[j + 1] = q++;
+        indices[j + 2] = q++;
+        indices[j + 3] = q;
+
+        if(j < (taille_tableau_indice - 6))
+        {
+            indices[j + 4] = q++;
+            indices[j + 5] = q;
+        }
+
+    }
+
+//! [1]
+    // Transfer vertex data to VBO 0
+    arrayBuf.bind();
+    arrayBuf.allocate(vertices, nb_faces * 4 * sizeof(VertexData));
+
+    // Transfer index data to VBO 1
+    indexBuf.bind();
+    indexBuf.allocate(indices, taille_tableau_indice * sizeof(GLushort));
+//! [1]
+}
+
 //! [2]
 void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
 {
@@ -177,3 +267,34 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
 }
 //! [2]
+
+void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
+{
+    // Tell OpenGL which VBOs to use
+    arrayBuf.bind();
+    indexBuf.bind();
+
+    // Offset for position
+    quintptr offset = 0;
+
+    // Tell OpenGL programmable pipeline how to locate vertex position data
+    int vertexLocation = program->attributeLocation("a_position");
+    program->enableAttributeArray(vertexLocation);
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+    // Offset for texture coordinate
+    offset += sizeof(QVector3D);
+
+    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
+    int texcoordLocation = program->attributeLocation("a_texcoord");
+    program->enableAttributeArray(texcoordLocation);
+    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+    // Draw cube geometry using indices from VBO 1
+    glDrawElements(GL_TRIANGLE_STRIP, 3000, GL_UNSIGNED_SHORT, 0);
+}
+
+float GeometryEngine::generateRand(int max)
+{
+    return static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / max));
+}
