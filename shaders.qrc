@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>vshader.glsl</file>
-        <file>fshader.glsl</file>
+        <file>geom_textured.frag</file>
+        <file>geom_textured.vert</file>
     </qresource>
 </RCC>

@@ -51,18 +51,22 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "geometryengine.h"
+#include <memory>
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
-#include <QMatrix4x4>
 #include <QQuaternion>
 #include <QVector2D>
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 
+#include "geometryengine.h"
+
+class Camera;
+class CameraController;
 class GeometryEngine;
+
 
 class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -73,30 +77,25 @@ public:
     ~MainWidget();
 
 protected:
-    void mousePressEvent(QMouseEvent *e) override;
-    void mouseReleaseEvent(QMouseEvent *e) override;
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
 
+private:
     void initShaders();
     void initTextures();
 
 private:
-    QBasicTimer timer;
-    QOpenGLShaderProgram program;
-    GeometryEngine *geometries;
+    QBasicTimer m_timer;
+    QOpenGLShaderProgram m_shaderProgram;
+    GeometryEngine *m_geometries;
 
-    QOpenGLTexture *texture;
+    QOpenGLTexture *m_texture;
 
-    QMatrix4x4 projection;
-
-    QVector2D mousePressPosition;
-    QVector3D rotationAxis;
-    qreal angularSpeed;
-    QQuaternion rotation;
+    std::unique_ptr<Camera> m_camera;
+    CameraController *m_cameraController;
 };
 
 #endif // MAINWIDGET_H
