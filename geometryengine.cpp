@@ -108,15 +108,12 @@ void GeometryEngine::initTerrainGeometry()
             const float xCoord = vertexIndex % m_terrainSize;
             const float zCoord = std::floor(vertexIndex / static_cast<float>(m_terrainSize));
 
-            float vertexHeight = 0.f;
-
             const bool vertexIsBoundary =
                     x < 2 || x > m_terrainSize - 3
                     || z < 2 || z > m_terrainSize - 3;
 
-            if (!vertexIsBoundary) {
-                vertexHeight = heightDistrib(re);
-            }
+            const float vertexHeight = (vertexIsBoundary) ? 0.f
+                                                          : heightDistrib(re);
 
             VertexData &vertex = vertices.at(vertexIndex);
             vertex.position = {xCoord, vertexHeight, zCoord};
