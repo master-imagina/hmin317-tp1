@@ -13,8 +13,8 @@ public:
     QVector3D eyePos() const;
     void setEyePos(const QVector3D &eyePos);
 
-    QVector3D upVec() const;
-    void setUpVec(const QVector3D &upVec);
+    QVector3D upVector() const;
+    void setUpVector(const QVector3D &upVector);
 
     QVector3D viewVector() const;
     QVector3D targetPos() const;

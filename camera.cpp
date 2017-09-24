@@ -28,12 +28,12 @@ void Camera::setEyePos(const QVector3D &eyePos)
     }
 }
 
-QVector3D Camera::upVec() const
+QVector3D Camera::upVector() const
 {
     return m_upVec;
 }
 
-void Camera::setUpVec(const QVector3D &upVec)
+void Camera::setUpVector(const QVector3D &upVec)
 {
     if (m_upVec != upVec) {
         m_upVec = upVec;
