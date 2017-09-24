@@ -63,7 +63,8 @@ struct VertexData
 };
 
 GeometryEngine::GeometryEngine()
-    : m_indexVbo(QOpenGLBuffer::IndexBuffer)
+    : m_arrayVbo(),
+      m_indexVbo(QOpenGLBuffer::IndexBuffer)
 {
     initializeOpenGLFunctions();
 
@@ -82,40 +83,50 @@ GeometryEngine::~GeometryEngine()
 
 void GeometryEngine::initTerrainGeometry()
 {
-    // Vertices
+    // Helpers for computing vertices
     const std::size_t vertexCount = m_terrainSize * m_terrainSize;
     std::vector<VertexData> vertices(vertexCount);
 
     std::random_device rd;
     std::default_random_engine re(rd());
+    std::uniform_real_distribution<float> heightDistrib(0, m_maxHeight);
 
-    std::uniform_int_distribution<int> heightDistrib(0, m_terrainSize - 1);
+    // Helpers for computing indices
+    const std::size_t maxXZCoord = m_terrainSize - 1;
 
-    for (std::size_t i = 0; i < vertices.size(); ++i) {
-        const float iId = i % m_terrainSize;
-        const float fl = std::floor(i / static_cast<float>(m_terrainSize));
-
-        VertexData &vertex = vertices[i];
-
-        vertex.position = {iId, static_cast<float>(heightDistrib(re)), fl};
-        vertex.texCoord = {iId / 3.f, fl / 2.f};
-    }
-
-    // Indices
-    const std::size_t indexCount = 3 * 2 * std::pow(m_terrainSize - 1, 2);
+    const std::size_t indexCount = 3 * 2 * std::pow(maxXZCoord, 2);
     std::vector<unsigned int> indices(indexCount);
 
     int indexCounter = 0;
 
-    for (int z = 0; z < (m_terrainSize - 1); ++z) {
-        for (int x = 0; x < (m_terrainSize - 1); ++x) {
-            indices[indexCounter++] = z * m_terrainSize + x;
-            indices[indexCounter++] = (z + 1) * m_terrainSize + x;
-            indices[indexCounter++] = z * m_terrainSize + (x + 1);
+    // Compute...
+    for (int z = 0; z < m_terrainSize; ++z) {
+        for (int x = 0; x < m_terrainSize; ++x) {
+            // ...vertices
+            const int vertexIndex = z * m_terrainSize + x;
 
-            indices[indexCounter++] = (z + 1) * m_terrainSize + x;
+            const float xCoord = vertexIndex % m_terrainSize;
+            const float zCoord = std::floor(vertexIndex / static_cast<float>(m_terrainSize));
+
+            VertexData &vertex = vertices.at(vertexIndex);
+            vertex.position = {xCoord, heightDistrib(re), zCoord};
+            vertex.texCoord = {xCoord / 3.f, zCoord / 2.f};
+
+            // ... and indices
+            if (x == maxXZCoord || z == maxXZCoord) {
+                continue;
+            }
+
+            const unsigned int firstSharedIndex = (z + 1) * m_terrainSize + x;
+            const unsigned int secondSharedIndex = z * m_terrainSize + (x + 1);
+
+            indices[indexCounter++] = vertexIndex;
+            indices[indexCounter++] = firstSharedIndex;
+            indices[indexCounter++] = secondSharedIndex;
+
+            indices[indexCounter++] = firstSharedIndex;
             indices[indexCounter++] = (z + 1) * m_terrainSize + (x + 1);
-            indices[indexCounter++] = z * m_terrainSize + (x + 1);
+            indices[indexCounter++] = secondSharedIndex;
         }
     }
 

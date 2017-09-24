@@ -70,6 +70,7 @@ private:
     QOpenGLBuffer m_indexVbo;
 
     std::size_t m_terrainSize = 16;
+    float m_maxHeight = 4.f;
 };
 
 #endif // GEOMETRYENGINE_H
