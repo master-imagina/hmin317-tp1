@@ -52,6 +52,10 @@
 
 #include <math.h>
 
+#include <QMatrix4x4>
+#include <QtMath>
+
+#include "camera.h"
 #include "cameracontroller.h"
 
 
@@ -61,13 +65,13 @@ MainWidget::MainWidget(QWidget *parent) :
     m_shaderProgram(),
     m_geometries(nullptr),
     m_texture(nullptr),
-    m_eyePos(8, 20, 8),
-    m_targetPos(8, 0, 8),
-    m_upVec(0, 0, 1),
-    m_projectionMatrix(),
+    m_camera(std::make_unique<Camera>()),
     m_cameraController(new CameraController(this))
 {
     installEventFilter(m_cameraController);
+
+    m_camera->setEyePos({8, 20, 8});
+    m_camera->setTheta(4.7f);
 }
 
 MainWidget::~MainWidget()
@@ -133,12 +137,7 @@ void MainWidget::initTextures()
 
 void MainWidget::resizeGL(int w, int h)
 {
-    qreal aspect = qreal(w) / qreal(h ? h : 1);
-
-    const qreal zNear = 1.0, zFar = 100.0, fov = 45.0;
-
-    m_projectionMatrix.setToIdentity();
-    m_projectionMatrix.perspective(fov, aspect, zNear, zFar);
+    m_camera->setAspectRatio(qreal(w) / qreal(h ? h : 1.f));
 }
 
 void MainWidget::paintGL()
@@ -148,16 +147,16 @@ void MainWidget::paintGL()
     m_texture->bind();
 
     // Calculate view transformation
-    m_cameraController->updateCamera(m_eyePos, m_targetPos, m_upVec);
-
-    m_viewMatrix.setToIdentity();
-    m_viewMatrix.lookAt(m_eyePos, m_targetPos, m_upVec);
+    m_cameraController->updateCamera(m_camera.get());
 
     // Send uniforms to shaders
+    const QMatrix4x4 viewMatrix = m_camera->viewMatrix();
+    const QMatrix4x4 projectionMatrix = m_camera->projectionMatrix();
+
     m_shaderProgram.setUniformValue("mvp_matrix",
-                                    m_projectionMatrix * m_viewMatrix);
+                                    projectionMatrix * viewMatrix);
     m_shaderProgram.setUniformValue("texture", 0);
 
-    // Draw cube geometry
+    // Draw geometry
     m_geometries->drawTerrainGeometry(&m_shaderProgram);
 }

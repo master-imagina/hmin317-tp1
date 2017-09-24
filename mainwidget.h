@@ -51,20 +51,21 @@
 #ifndef MAINWIDGET_H
 #define MAINWIDGET_H
 
-#include "geometryengine.h"
+#include <memory>
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
-#include <QMatrix4x4>
 #include <QQuaternion>
 #include <QVector2D>
 #include <QBasicTimer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 
+#include "geometryengine.h"
 
-class GeometryEngine;
+class Camera;
 class CameraController;
+class GeometryEngine;
 
 
 class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
@@ -93,13 +94,7 @@ private:
 
     QOpenGLTexture *m_texture;
 
-    QVector3D m_eyePos;
-    QVector3D m_targetPos;
-    QVector3D m_upVec;
-    QMatrix4x4 m_viewMatrix;
-
-    QMatrix4x4 m_projectionMatrix;
-
+    std::unique_ptr<Camera> m_camera;
     CameraController *m_cameraController;
 };
 

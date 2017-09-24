@@ -4,8 +4,11 @@
 #include <QObject>
 #include <QVector3D>
 
+
 class QKeyEvent;
 class QMouseEvent;
+
+class Camera;
 
 
 class CameraController : public QObject
@@ -18,15 +21,13 @@ public:
 
     bool eventFilter(QObject *obj, QEvent *e) override;
 
-    void updateCamera(QVector3D &eye, QVector3D &target, QVector3D &up);
+    void updateCamera(Camera *camera);
 
 private:
     void keyPressEvent(QKeyEvent* e);
     void keyReleaseEvent(QKeyEvent* e);
 
-    QVector3D computeDirectionFromKeys(const QVector3D &eye,
-                                       const QVector3D &target,
-                                       const QVector3D &up) const;
+    QVector3D computeDirectionFromKeys(Camera *camera) const;
 
 private:
     enum KeyDirection

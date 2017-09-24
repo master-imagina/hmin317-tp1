@@ -2,6 +2,8 @@
 
 #include <QKeyEvent>
 
+#include "camera.h"
+
 
 CameraController::CameraController(QObject *parent) :
     QObject(parent),
@@ -36,12 +38,10 @@ bool CameraController::eventFilter(QObject *obj, QEvent *e)
     return QObject::eventFilter(obj, e);
 }
 
-QVector3D CameraController::computeDirectionFromKeys(const QVector3D &eye,
-                                                     const QVector3D &target,
-                                                     const QVector3D &up) const
+QVector3D CameraController::computeDirectionFromKeys(Camera *camera) const
 {
-    const QVector3D frontDir = (target - eye).normalized();
-    const QVector3D rightDir = QVector3D::crossProduct(frontDir, up);
+    const QVector3D viewVec = camera->viewVector();
+    const QVector3D rightVec = camera->rightVector();
 
     QVector3D ret;
 
@@ -49,36 +49,33 @@ QVector3D CameraController::computeDirectionFromKeys(const QVector3D &eye,
     case KeyDirection::None:
         break;
     case KeyDirection::Up:
-        ret = frontDir;
+        ret = viewVec;
         break;
     case KeyDirection::Down:
-        ret = frontDir * -1;
+        ret = viewVec * -1;
         break;
     case KeyDirection::Left:
-        ret = rightDir * -1;
+        ret = rightVec * -1;
         break;
     case KeyDirection::Right:
-        ret = rightDir;
+        ret = rightVec;
         break;
     }
 
     return ret;
 }
 
-void CameraController::updateCamera(QVector3D &eye,
-                                    QVector3D &target,
-                                    QVector3D &up)
+void CameraController::updateCamera(Camera *camera)
 {
-    const QVector3D oldEye = eye;
+    const QVector3D oldEye = camera->eyePos();
 
     const float speed = (m_turboKeyPressed) ? m_turboSpeed : m_moveSpeed;
     const float moveAmount = (12 / 1000.0f) * speed;
 
     const QVector3D newEye =
-            computeDirectionFromKeys(oldEye, target, up) * moveAmount + oldEye;
+            computeDirectionFromKeys(camera) * moveAmount + oldEye;
 
-    eye = newEye;
-    target += (newEye - oldEye);
+    camera->setEyePos(newEye);
 }
 
 void CameraController::keyPressEvent(QKeyEvent *e)

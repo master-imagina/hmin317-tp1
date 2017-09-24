@@ -9,12 +9,14 @@ set(CMAKE_CXX_STANDARD 14)
 set(HEADERS
     mainwidget.h
     geometryengine.h
+    camera.h
     cameracontroller.h
     )
 
 set(SOURCES
     mainwidget.cpp
     geometryengine.cpp
+    camera.cpp
     cameracontroller.cpp
     main.cpp
     )
