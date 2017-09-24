@@ -277,12 +277,13 @@ void MainWidget::paintGL()
 
     // Use texture unit 0 which contains cube.png
     program.setUniformValue("texture", 0);
-    program.setUniformValue("light_position", QVector4D(0.0, 4.0, 3.0, 1.0));
+    program.setUniformValue("light_position1", QVector4D(0.0, 5.0, 3.0, 1.0));
+    program.setUniformValue("light_position2", QVector4D(5.0, 0, 3.0, 1.0));
 
     program.setUniformValue("material.ambient",QVector3D(0.8f, 0.8f, 0.8f));
     program.setUniformValue("material.diffuse",QVector3D(0.8f, 0.8f, 0.8f));
-    program.setUniformValue("material.specular",QVector3D(0.8f, 0.1f, 0.31f));
-    program.setUniformValue("material.shininess",128.0f);
+    program.setUniformValue("material.specular",QVector3D(0.8f, 0.8f, 0.8f));
+    program.setUniformValue("material.shininess",256.0f);
     program.setUniformValue("eye_pos",QVector3D(eye.posX, eye.posY, eye.posZ));
 
     // Draw cube geometry
