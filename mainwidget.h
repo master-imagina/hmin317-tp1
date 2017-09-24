@@ -64,6 +64,18 @@
 
 class GeometryEngine;
 
+
+struct Eye{
+    float posX;
+    float posY;
+    float posZ;
+    float speed = 0.3;
+    bool left = false;
+    bool right = false;
+    bool forward = false;
+    bool backward = false;
+};
+
 class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
@@ -83,8 +95,11 @@ protected:
 
     void initShaders();
     void initTextures();
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
 
 private:
+    Eye eye;
     QBasicTimer timer;
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
@@ -97,6 +112,8 @@ private:
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+
+
 };
 
 #endif // MAINWIDGET_H
