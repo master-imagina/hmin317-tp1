@@ -46,6 +46,12 @@ la méthode.
 Question 3
 ----------
 
+L'algorithme calcule les positions des sommets et les indices en une double boucle. Les coordonnées X et Z sont définies dans l'ensemble \[0, tailleTerrain\]. La hauteur d'un sommet est définie par un générateur pseudo-aléatoire C++11.
+
+Pour garder un effet plus naturel, les sommets situées au frontières du terrain ont une hauteur nulle.
+
+On pourrait réduire le transfert de données au GPU en ne définissant qu'une hauteur pour chaque sommet, les coordonnées X et Z étant calculées dans le vertex shader.
+
 
 Question 4
 ----------
