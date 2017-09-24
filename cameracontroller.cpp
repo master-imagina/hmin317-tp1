@@ -5,7 +5,10 @@
 
 CameraController::CameraController(QObject *parent) :
     QObject(parent),
-    m_keyDirection(KeyDirection::None)
+    m_keyDirection(KeyDirection::None),
+    m_moveSpeed(10.f),
+    m_turboSpeed(m_moveSpeed * 4),
+    m_turboKeyPressed(false)
 {}
 
 CameraController::~CameraController()
@@ -62,13 +65,15 @@ QVector3D CameraController::computeDirectionFromKeys(const QVector3D &eye,
     return ret;
 }
 
-void CameraController::updateViewMatrix(QVector3D &eye,
-                                        QVector3D &target,
-                                        QVector3D &up)
+void CameraController::updateCamera(QVector3D &eye,
+                                    QVector3D &target,
+                                    QVector3D &up)
 {
     const QVector3D oldEye = eye;
 
-    const float moveAmount = (12 / 1000.0f);
+    const float speed = (m_turboKeyPressed) ? m_turboSpeed : m_moveSpeed;
+    const float moveAmount = (12 / 1000.0f) * speed;
+
     const QVector3D newEye =
             computeDirectionFromKeys(oldEye, target, up) * moveAmount + oldEye;
 
@@ -76,10 +81,9 @@ void CameraController::updateViewMatrix(QVector3D &eye,
     target += (newEye - oldEye);
 }
 
-void CameraController::keyPressEvent(QKeyEvent *event)
+void CameraController::keyPressEvent(QKeyEvent *e)
 {
-    // Key handling
-    const int key = event->key();
+    const int key = e->key();
 
     KeyDirection newDirection = KeyDirection::None;
 
@@ -97,11 +101,15 @@ void CameraController::keyPressEvent(QKeyEvent *event)
     }
 
     m_keyDirection = (KeyDirection) ((int) m_keyDirection | (int) newDirection);
+
+    if (e->modifiers() & Qt::ShiftModifier) {
+        m_turboKeyPressed = true;
+    }
 }
 
-void CameraController::keyReleaseEvent(QKeyEvent *event)
+void CameraController::keyReleaseEvent(QKeyEvent *e)
 {
-    const int key = event->key();
+    const int key = e->key();
 
     KeyDirection directionToExit = KeyDirection::None;
 
@@ -122,4 +130,8 @@ void CameraController::keyReleaseEvent(QKeyEvent *event)
     }
 
     m_keyDirection = (KeyDirection) ((int) m_keyDirection & (~(int) directionToExit));
+
+    if (key == Qt::Key_Shift) {
+        m_turboKeyPressed = false;
+    }
 }

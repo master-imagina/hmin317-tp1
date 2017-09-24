@@ -148,7 +148,7 @@ void MainWidget::paintGL()
     m_texture->bind();
 
     // Calculate view transformation
-    m_cameraController->updateViewMatrix(m_eyePos, m_targetPos, m_upVec);
+    m_cameraController->updateCamera(m_eyePos, m_targetPos, m_upVec);
 
     m_viewMatrix.setToIdentity();
     m_viewMatrix.lookAt(m_eyePos, m_targetPos, m_upVec);

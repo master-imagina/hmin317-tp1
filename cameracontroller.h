@@ -18,11 +18,11 @@ public:
 
     bool eventFilter(QObject *obj, QEvent *e) override;
 
-    void updateViewMatrix(QVector3D &eye, QVector3D &target, QVector3D &up);
+    void updateCamera(QVector3D &eye, QVector3D &target, QVector3D &up);
 
 private:
-    void keyPressEvent(QKeyEvent* event);
-    void keyReleaseEvent(QKeyEvent* event);
+    void keyPressEvent(QKeyEvent* e);
+    void keyReleaseEvent(QKeyEvent* e);
 
     QVector3D computeDirectionFromKeys(const QVector3D &eye,
                                        const QVector3D &target,
@@ -39,6 +39,10 @@ private:
     };
 
     KeyDirection m_keyDirection;
+
+    float m_moveSpeed;
+    float m_turboSpeed;
+    bool m_turboKeyPressed;
 };
 
 #endif // CAMERACONTROLLER_H
