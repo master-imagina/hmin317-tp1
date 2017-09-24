@@ -1,3 +1,6 @@
+Moteurs de jeux : compte-rendu de TP1
+=====================================
+
 
 Question 1
 ----------
@@ -67,5 +70,10 @@ Déplacer la caméra avec une touche clavier se déroule comme qui suit :
 
 Pour déplacer la caméra sur ses axes X et Z, il faut exploiter les vecteurs eye, target et up. Calculer le vecteur de vue à partir des vecteurs eye et target ; calculer le vecteur droit qui est le produit vectoriel des vecteurs vue et up.
 
+
 Bonus
 -----
+
+
+
+
