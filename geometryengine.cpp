@@ -53,6 +53,7 @@
 #include <QVector2D>
 #include <QVector3D>
 #include <iostream>
+#include <time.h>
 
 using namespace std;
 struct VertexData
@@ -90,11 +91,14 @@ GeometryEngine::~GeometryEngine()
 
 void GeometryEngine::initCubeGeometry()
 {
+
+    srand (time(NULL));
     // For cube we would need only 8 vertices but we have to
     // duplicate vertex for each face because texture coordinate
     // is different.
     int i = {0.0f};
     int j = {0.0f};
+    float z = {0.0f};
 
     VertexData vertices[16*16];
 int cpt = 0;
@@ -102,8 +106,8 @@ int cpt = 0;
     {
         for(int k = 0; k < 16;  k++)
         {
-
-            vertices[cpt] ={QVector3D(i, j,  0.0f), QVector2D(l/10, k/10)},  // v0
+            z = rand() % 5;
+            vertices[cpt] ={QVector3D(i, j, z), QVector2D(l/10, k/10)},  // v0
                     i+=1.0f;
             cpt++;
         }

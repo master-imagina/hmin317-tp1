@@ -97,6 +97,33 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     // Increase angular speed
     angularSpeed += acc;
 }
+
+void MainWidget::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key() == Qt::Key_Up)
+    {
+        projection.translate(0,1,0);
+        update();
+    }
+    if(e->key() == Qt::Key_Down)
+    {
+        projection.translate(0,-1,0);
+        update();
+    }
+    if(e->key() == Qt::Key_Left)
+    {
+        projection.translate(-1,0,0);
+        update();
+    }
+    if(e->key() == Qt::Key_Right)
+    {
+        projection.translate(1,0,0);
+        update();
+    }
+}
+
+
+
 //! [0]
 
 //! [1]
