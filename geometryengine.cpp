@@ -205,21 +205,21 @@ void GeometryEngine::initPlaneGeometry()
         for(int j = 0; j < 16 -1; ++j){
             indices[count++] = (i*16) + j;
             indices[count++] = (i*16) + j + 1;
-            indices[count++] = i*16 + 1 + j;
-            indices[count++] = ;
-            indices[count++] = ;
-            indices[count++] = ;
+            indices[count++] = (i*16) + 16 + j;
+            indices[count++] = (i*16) + j + 1;
+            indices[count++] = (i*16) + 17 + j;
+            indices[count++] = (i*16) + j + 16;
         }
     }
 
 //! [1]
     // Transfer vertex data to VBO 0
     arrayBuf.bind();
-    arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
+    arrayBuf.allocate(vertices, 16 * 16 * sizeof(VertexData));
 
     // Transfer index data to VBO 1
     indexBuf.bind();
-    indexBuf.allocate(indices, 34 * sizeof(GLushort));
+    indexBuf.allocate(indices, 15 * 15 * 6 * sizeof(GLushort));
     //! [1]
 }
 
@@ -246,7 +246,7 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLES, 16*16, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLES, 15*15*6, GL_UNSIGNED_SHORT, 0);
 }
 
 //! [3]
