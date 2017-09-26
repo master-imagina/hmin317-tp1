@@ -77,6 +77,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e) override;
     void wheelEvent(QWheelEvent *event) override;
     void timerEvent(QTimerEvent *e) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    //void mouseMoveEvent(QMouseEvent *event) override;
 
     void initializeGL() override;
     void resizeGL(int w, int h) override;
@@ -96,9 +98,13 @@ private:
 
     QVector2D mousePressPosition;
     QVector3D rotationAxis;
+    QVector3D cameraPos, cameraFront, cameraUp;
     qreal angularSpeed;
     QQuaternion rotation;
     int fov;
+    float lastX,lastY;
+    float pitch, yaw;
+    bool firstMouse;
 };
 
 #endif // MAINWIDGET_H
