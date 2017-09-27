@@ -53,20 +53,15 @@
 #include <QMouseEvent>
 
 #include <math.h>
-#include <QtMath>
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
     angularSpeed(0),
-    cameraPos(0.0f, 0.0f, 5.0f),
-    cameraFront(0.0f, 0.0f, -1.0f),
-    cameraUp(0.0f, 1.0f, 0.0f),
-    lastX(400),
-    lastY(300),
-    pitch(0.0f),
-    yaw(0.0f),
+    camera(),
+    lastX(0.0f),
+    lastY(0.0f),
     firstMouse(true)
 {
 }
@@ -90,27 +85,27 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-    // Mouse release position - mouse press position
-    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    if(e->button() == Qt::RightButton) {
+        // Mouse release position - mouse press position
+        QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
 
-    // Rotation axis is perpendicular to the mouse position difference
-    // vector
-    QVector3D n = QVector3D(diff.y(), diff.x(), 0.0).normalized();
+        // Rotation axis is perpendicular to the mouse position difference
+        // vector
+        QVector3D n = QVector3D(diff.y(), diff.x(), 0.0).normalized();
 
-    // Accelerate angular speed relative to the length of the mouse sweep
-    qreal acc = diff.length() / 100.0;
+        // Accelerate angular speed relative to the length of the mouse sweep
+        qreal acc = diff.length() / 100.0;
 
-    // Calculate new rotation axis as weighted sum
-    rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
-    // Increase angular speed
-    angularSpeed += acc;
+        // Calculate new rotation axis as weighted sum
+        rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
+        // Increase angular speed
+        angularSpeed += acc;
+    }
 }
 //! [0]
 
 void MainWidget::wheelEvent(QWheelEvent *event) {
-
 }
-
 
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
@@ -132,53 +127,41 @@ void MainWidget::timerEvent(QTimerEvent *)
 //! [1]
 
 void MainWidget::keyPressEvent(QKeyEvent *event) {
-    float cameraSpeed = 0.1f;
     switch(event->key()) {
         case Qt::Key_Up:
-            cameraPos += cameraSpeed * cameraFront;
+            camera.processKeyPress(Camera_Movement::FORWARD);
             break;
         case Qt::Key_Down:
-            cameraPos -= cameraSpeed * cameraFront;
+            camera.processKeyPress(Camera_Movement::BACKWARD);
             break;
         case Qt::Key_Left:
-            cameraPos -= QVector3D::crossProduct(cameraFront,cameraUp).normalized() * cameraSpeed;
+            camera.processKeyPress(Camera_Movement::LEFT);
             break;
         case Qt::Key_Right:
-            cameraPos += QVector3D::crossProduct(cameraFront,cameraUp).normalized() * cameraSpeed;
+            camera.processKeyPress(Camera_Movement::RIGHT);
             break;
     }
     update();
 }
-/*
+
 void MainWidget::mouseMoveEvent(QMouseEvent *event) {
-    if(firstMouse) // this bool variable is initially set to true
-    {
+    if(event->buttons() & Qt::LeftButton) {
+        if(firstMouse) // this bool variable is initially set to true
+        {
+            lastX = event->x();
+            lastY = event->y();
+            firstMouse = false;
+        }
+        float xoffset = event->x() - lastX;
+        float yoffset = lastY - event->y(); // reversed since y-coordinates range from bottom to top
         lastX = event->x();
         lastY = event->y();
-        firstMouse = false;
-    }
-    float xoffset = event->x() - lastX;
-    float yoffset = lastY - event->y(); // reversed since y-coordinates range from bottom to top
-    lastX = event->x();
-    lastY = event->y();
 
-    float sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-    yaw   += xoffset;
-    pitch += yoffset;
-    if(pitch > 89.0f)
-        pitch =  89.0f;
-    if(pitch < -89.0f)
-        pitch = -89.0f;
-    QVector3D front;
-    front.setX(cos(qDegreesToRadians(pitch)) * cos(qDegreesToRadians(yaw)));
-    front.setY(sin(qDegreesToRadians(pitch)));
-    front.setZ(cos(qDegreesToRadians(pitch)) * sin(qDegreesToRadians(yaw)));
-    cameraFront = front.normalized();
-    update();
+        camera.processMouseMovement(xoffset, yoffset);
+        update();
+    }
 }
-*/
+
 void MainWidget::initializeGL()
 {
     initializeOpenGLFunctions();
@@ -268,8 +251,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    //matrix.translate(0.0, 0.0, -5.0);
-    matrix.lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+    camera.lookAt(matrix);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
