@@ -51,7 +51,7 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
-
+#include <QKeyEvent>
 #include <math.h>
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -61,6 +61,9 @@ MainWidget::MainWidget(QWidget *parent) :
     angularSpeed(0)
 {
 }
+
+float posX = 0.0, posY = 0.0, posZ = -5.0;
+float speed = 0.1;
 
 MainWidget::~MainWidget()
 {
@@ -73,6 +76,41 @@ MainWidget::~MainWidget()
 }
 
 //! [0]
+
+void MainWidget::keyPressEvent(QKeyEvent *event)
+{
+	switch(event->key()){
+		case Qt::Key_Up:
+			posY-=speed;
+			update();
+			break;
+		case Qt::Key_Down:
+			posY+=speed;
+			update();
+			break;
+		case Qt::Key_Right:
+			posX-=speed;
+			update();
+			break;
+		case Qt::Key_Left:
+			posX+=speed;
+			update();
+			break;
+		case Qt::Key_PageUp:
+			posZ+=speed;
+			update();
+			break;
+		case Qt::Key_PageDown:
+			posZ-=speed;
+			update();
+			break;
+	}
+}
+
+void MainWidget::keyReleaseEvent(QKeyEvent *event)
+{
+
+}
 void MainWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
@@ -132,7 +170,7 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 //! [2]
 
     geometries = new GeometryEngine;
@@ -159,6 +197,9 @@ void MainWidget::initShaders()
     // Bind shader pipeline for use
     if (!program.bind())
         close();
+        
+
+
 }
 //! [3]
 
@@ -187,7 +228,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 2.0, zFar = 7.0, fov = 80.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -207,8 +248,9 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(posX,posY,posZ);
     matrix.rotate(rotation);
+    
 
     // Set modelview-projection matrix
     program.setUniformValue("mvp_matrix", projection * matrix);
@@ -218,5 +260,5 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
 }

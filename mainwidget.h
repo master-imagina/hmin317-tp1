@@ -83,6 +83,8 @@ protected:
 
     void initShaders();
     void initTextures();
+    void keyPressEvent(QKeyEvent *event);
+ 	void keyReleaseEvent(QKeyEvent *event);
 
 private:
     QBasicTimer timer;
