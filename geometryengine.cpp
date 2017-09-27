@@ -192,7 +192,8 @@ void GeometryEngine::initPlaneGeometry()
         {
             float tex_x = (i%2)*0.33;
             float tex_y = (j%2)*0.5;
-            vertices[i*16+j] = {QVector3D((float)i/2,(float)j/2,0.0f), QVector2D(tex_x, tex_y)};
+            float z = (rand()%2)-0.5;
+            vertices[i*16+j] = {QVector3D((float)i/2,(float)j/2,z), QVector2D(tex_x, tex_y)};
         }
     }
 

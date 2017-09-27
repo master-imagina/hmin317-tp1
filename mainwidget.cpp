@@ -54,6 +54,8 @@
 
 #include <math.h>
 
+#include <QKeyEvent>
+
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
@@ -98,6 +100,46 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     angularSpeed += acc;
 }
 //! [0]
+
+void MainWidget::keyPressEvent(QKeyEvent *event)
+{
+
+    switch(event->key()){
+
+        case Qt::Key_Z: 
+            posY+=acc;update();
+            break;
+
+        case Qt::Key_Q:
+            posX-=acc;update();
+            break;
+
+        case Qt::Key_S:
+            posY-=acc;update();
+            break;
+
+        case Qt::Key_D:
+            posX+=acc;update();
+            break;
+
+        case Qt::Key_E:
+            posZ+=acc;update();
+            break;
+
+        case Qt::Key_A:
+            posZ-=acc;update();
+            break;
+    }
+
+}
+
+
+void MainWidget::keyReleaseEvent(QKeyEvent *event)
+{
+
+
+}
+
 
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
@@ -187,7 +229,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 1.0, zFar = 14.0, fov = 90.0;
+    const qreal zNear = 3.0, zFar = 500.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -207,7 +249,8 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    // matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(posX, posY, posZ);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
