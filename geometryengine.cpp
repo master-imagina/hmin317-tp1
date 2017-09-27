@@ -52,6 +52,7 @@
 
 #include <QVector2D>
 #include <QVector3D>
+#include <vector>
 
 struct VertexData
 {
@@ -70,7 +71,7 @@ GeometryEngine::GeometryEngine()
     indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
-    initCubeGeometry();
+    // initCubeGeometry();
     initPlaneGeometry();
 }
 
@@ -185,34 +186,39 @@ void GeometryEngine::initPlaneGeometry()
 
     VertexData vertices[16*16];
 
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < 16; i++)
     {
-        for (int j = 0; j < 16; i++)
+        for (int j = 0; j < 16; j++)
         {
-            vertices[i*16+j] = {QVector3D(i/2,j/2,0.0f), QVector2D(0.0f, 0.0f)};
+            float tex_x = (i%2)*0.33;
+            float tex_y = (j%2)*0.5;
+            vertices[i*16+j] = {QVector3D((float)i/2,(float)j/2,0.0f), QVector2D(tex_x, tex_y)};
         }
     }
 
-    GLushort indices[15*15*2];
+    std::vector<GLushort> indices_vector;
 
     for (int i = 0; i < 15; i++)
     {
         //ajoute 1er point
+        indices_vector.push_back(i*16);
         for (int j = 0; j < 16; j++)
         {
-            indices[i*16+j] = i;
+            indices_vector.push_back(i*16+j);
+            indices_vector.push_back((i+1)*16+j);
         }
         //ajoute dernier
+        indices_vector.push_back((i+1)*16+15);
     }
 
 //! [1]
     // Transfer vertex data to VBO 0
     arrayBuf.bind();
-    arrayBuf.allocate(vertices, 24 * sizeof(VertexData));
+    arrayBuf.allocate(vertices, 16*16 * sizeof(VertexData));
 
     // Transfer index data to VBO 1
     indexBuf.bind();
-    indexBuf.allocate(indices, 34 * sizeof(GLushort));
+    indexBuf.allocate(&indices_vector.front(), indices_vector.size() * sizeof(GLushort));
 //! [1]
 
 }
@@ -241,6 +247,6 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
     program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
 
     // Draw cube geometry using indices from VBO 1
-    glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLE_STRIP, 15*2+15*16*2, GL_UNSIGNED_SHORT, 0);
 
 }   
