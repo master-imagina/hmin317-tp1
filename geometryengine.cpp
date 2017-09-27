@@ -54,6 +54,7 @@
 #include <QVector3D>
 #include <vector>
 #include <iostream>
+#include <random>  
 
 using namespace std;
 
@@ -85,13 +86,18 @@ GeometryEngine::~GeometryEngine()
 //! [0]
 void GeometryEngine::initPlaneGeometry()
 {
+	
+	mt19937 rng;
+	rng.seed(std::random_device()());
+	uniform_int_distribution<std::mt19937::result_type> dist6(0,5);
+	
 	//Point for a plan of 16*16
 	VertexData vertices[16*16];
 	for(int i = 0;i<16;i++){
 		for(int j = 0;j<16;j++){
 			float x = (i%2)*0.33;
 			float y = (j%2)*0.5;
-			vertices[16*i+j] = {QVector3D(((float)i-8.0)/4.0, ((float)j-8.0)/4.0,0.0f), QVector2D(x, y)};
+			vertices[16*i+j] = {QVector3D(((float)i-8.0)/4.0, ((float)j-8.0)/4.0,dist6(rng)/10.0), QVector2D(x, y)};
 		}
 	}
 	

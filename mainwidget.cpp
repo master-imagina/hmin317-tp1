@@ -82,7 +82,7 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     // Mouse release position - mouse press position
-    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    /*QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
 
     // Rotation axis is perpendicular to the mouse position difference
     // vector
@@ -95,7 +95,7 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
 
     // Increase angular speed
-    angularSpeed += acc;
+    angularSpeed += acc;*/
 }
 //! [0]
 
@@ -132,7 +132,7 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 //! [2]
 
     geometries = new GeometryEngine;
@@ -159,31 +159,6 @@ void MainWidget::initShaders()
     // Bind shader pipeline for use
     if (!program.bind())
         close();
-        
-	// Lighting test
-
-    GLfloat mat_specular[] = { 1.0, 0.0, 1.0, 1.0 };
-    GLfloat mat_shininess[] = { 50.0 };
-    GLfloat light_position[] = { -5.0, -5.0, -5.0, 0.0 };
-    glClearColor (0.0, 0.1, 0.0, 0.0);
-    glShadeModel (GL_SMOOTH);
-
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-    GLfloat light_ambient[] = { 1.0, 0.0, 0.0, 1.0 };
-    GLfloat light_diffuse[] = { 1.0, 0.0, 0.0, 1.0 };
-    GLfloat light_specular[] = { 1.0, 0.0, 0.0, 1.0 };
-
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_DEPTH_TEST);
 
 
 }
