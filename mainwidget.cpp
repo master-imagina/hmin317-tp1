@@ -197,6 +197,7 @@ void MainWidget::initShaders()
     // Bind shader pipeline for use
     if (!program.bind())
         close();
+        
 
 
 }
@@ -249,6 +250,7 @@ void MainWidget::paintGL()
     QMatrix4x4 matrix;
     matrix.translate(posX,posY,posZ);
     matrix.rotate(rotation);
+    
 
     // Set modelview-projection matrix
     program.setUniformValue("mvp_matrix", projection * matrix);
