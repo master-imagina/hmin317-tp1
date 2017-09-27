@@ -51,7 +51,7 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
-
+#include <QKeyEvent>
 #include <math.h>
 
 MainWidget::MainWidget(QWidget *parent) :
@@ -61,6 +61,9 @@ MainWidget::MainWidget(QWidget *parent) :
     angularSpeed(0)
 {
 }
+
+float posX = 0.0, posY = 0.0, posZ = -5.0;
+float speed = 0.1;
 
 MainWidget::~MainWidget()
 {
@@ -73,6 +76,41 @@ MainWidget::~MainWidget()
 }
 
 //! [0]
+
+void MainWidget::keyPressEvent(QKeyEvent *event)
+{
+	switch(event->key()){
+		case Qt::Key_Up:
+			posY-=speed;
+			update();
+			break;
+		case Qt::Key_Down:
+			posY+=speed;
+			update();
+			break;
+		case Qt::Key_Right:
+			posX-=speed;
+			update();
+			break;
+		case Qt::Key_Left:
+			posX+=speed;
+			update();
+			break;
+		case Qt::Key_PageUp:
+			posZ+=speed;
+			update();
+			break;
+		case Qt::Key_PageDown:
+			posZ-=speed;
+			update();
+			break;
+	}
+}
+
+void MainWidget::keyReleaseEvent(QKeyEvent *event)
+{
+
+}
 void MainWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
@@ -82,7 +120,7 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     // Mouse release position - mouse press position
-    /*QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
 
     // Rotation axis is perpendicular to the mouse position difference
     // vector
@@ -95,7 +133,7 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
 
     // Increase angular speed
-    angularSpeed += acc;*/
+    angularSpeed += acc;
 }
 //! [0]
 
@@ -209,7 +247,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(posX,posY,posZ);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
