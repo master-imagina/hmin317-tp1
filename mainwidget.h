@@ -83,6 +83,9 @@ protected:
 
     void initShaders();
     void initTextures();
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+
 
 private:
     QBasicTimer timer;
@@ -97,6 +100,11 @@ private:
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+
+    float posX = 0.0;
+    float posY = 0.0;
+    float posZ = -15.0;
+    float acc = 0.4;
 };
 
 #endif // MAINWIDGET_H
