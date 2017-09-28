@@ -58,8 +58,9 @@ MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
-    angularSpeed(0)
-{
+    angularSpeed(0),
+    camera()
+    setMouseTracking(true);
 }
 
 MainWidget::~MainWidget()
@@ -81,23 +82,27 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 {
-    // Mouse release position - mouse press position
-    QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
+    if(e->button() == Qt::RightButton) {
+        // Mouse release position - mouse press position
+        QVector2D diff = QVector2D(e->localPos()) - mousePressPosition;
 
-    // Rotation axis is perpendicular to the mouse position difference
-    // vector
-    QVector3D n = QVector3D(diff.y(), diff.x(), 0.0).normalized();
+        // Rotation axis is perpendicular to the mouse position difference
+        // vector
+        QVector3D n = QVector3D(diff.y(), diff.x(), 0.0).normalized();
 
-    // Accelerate angular speed relative to the length of the mouse sweep
-    qreal acc = diff.length() / 100.0;
+        // Accelerate angular speed relative to the length of the mouse sweep
+        qreal acc = diff.length() / 100.0;
 
-    // Calculate new rotation axis as weighted sum
-    rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
-
-    // Increase angular speed
-    angularSpeed += acc;
+        // Calculate new rotation axis as weighted sum
+        rotationAxis = (rotationAxis * angularSpeed + n * acc).normalized();
+        // Increase angular speed
+        angularSpeed += acc;
+    }
 }
 //! [0]
+
+void MainWidget::wheelEvent(QWheelEvent *event) {
+}
 
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
@@ -118,6 +123,34 @@ void MainWidget::timerEvent(QTimerEvent *)
 }
 //! [1]
 
+void MainWidget::keyPressEvent(QKeyEvent *event) {
+    switch(event->key()) {
+        case Qt::Key_Up:
+            camera.processKeyPress(Camera_Movement::FORWARD);
+            break;
+        case Qt::Key_Down:
+            camera.processKeyPress(Camera_Movement::BACKWARD);
+            break;
+        case Qt::Key_Left:
+            camera.processKeyPress(Camera_Movement::LEFT);
+            break;
+        case Qt::Key_Right:
+            camera.processKeyPress(Camera_Movement::RIGHT);
+            break;
+    }
+    update();
+}
+
+void MainWidget::mouseMoveEvent(QMouseEvent *event) {
+    if(event->buttons() & Qt::LeftButton) {
+        float xoffset = event->x() - mousePressPosition.x();
+        float yoffset = mousePressPosition.y() - event->y(); // reversed since y-coordinates range from bottom to top
+        mousePressPosition = QVector2D(event->localPos());
+        camera.processMouseMovement(xoffset, yoffset);
+        update();
+    }
+}
+
 void MainWidget::initializeGL()
 {
     initializeOpenGLFunctions();
@@ -132,9 +165,8 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 //! [2]
-
     geometries = new GeometryEngine;
 
     // Use QBasicTimer because its faster than QTimer
@@ -207,7 +239,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    camera.lookAt(matrix);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -218,5 +250,7 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    //geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
+
 }
