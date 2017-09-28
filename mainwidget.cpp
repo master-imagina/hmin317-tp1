@@ -77,6 +77,8 @@ void MainWidget::mousePressEvent(QMouseEvent *e)
 {
     // Save mouse press position
     mousePressPosition = QVector2D(e->localPos());
+
+
 }
 
 void MainWidget::mouseReleaseEvent(QMouseEvent *e)
@@ -188,7 +190,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 0.1, zFar = 50.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -208,7 +210,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(-5.0, 0.0, -30.0);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
