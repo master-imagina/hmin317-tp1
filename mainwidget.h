@@ -62,6 +62,7 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
 #include "camerathird.h"
+#include "camerafirst.h"
 #include <QTimer>
 
 class GeometryEngine;
@@ -111,7 +112,7 @@ private:
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
-    CameraThird camera;
+    CameraFirst camera;
     float dx,dy,wheelDelta;
     int keyZPressed,keySPressed,keyQPressed,keyDPressed;
 };

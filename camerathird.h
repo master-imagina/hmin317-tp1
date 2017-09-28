@@ -16,6 +16,7 @@ public:
 private:
     glm::vec3 lookAt;
 
+
     float distanceFromPivot;
     float angleAroundPivot;
 

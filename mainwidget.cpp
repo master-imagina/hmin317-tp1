@@ -73,6 +73,8 @@ MainWidget::MainWidget(QWidget *parent) :
     connect(time,SIGNAL(timeout()),this,SLOT(update()));
     time->start(16);
     keyZPressed=0,keySPressed=0,keyQPressed=0,keyDPressed=0;
+    this->setFocusPolicy(Qt::ClickFocus);
+    this->setMouseTracking(true);
 }
 
 MainWidget::~MainWidget()
