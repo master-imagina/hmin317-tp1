@@ -54,6 +54,8 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLBuffer>
+#include <cstdlib>
+#include <ctime>
 
 class GeometryEngine : protected QOpenGLFunctions
 {
