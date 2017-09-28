@@ -172,8 +172,6 @@ void GeometryEngine::initPlaneGeometry()
             r = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/2.0f));
             vertices[countVertices++] = {QVector3D((float)x, (float)y, (float)r), QVector2D(countXTex/3.0f, countYTex/2.0f)};
 
-
-
             if (countXTex == 3)
             {
                 countXTex = 0;
@@ -213,8 +211,6 @@ void GeometryEngine::initPlaneGeometry()
         {
             indices[i] = countXIndice++;
             indices[i+1] = countYIndice++;
-
-
         }
 
 
@@ -283,5 +279,5 @@ void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
 
     // Draw cube geometry using indices from VBO 1
 
-    glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(GL_TRIANGLE_STRIP, 256, GL_UNSIGNED_SHORT, 0);
 }
