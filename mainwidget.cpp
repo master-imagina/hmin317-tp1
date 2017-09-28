@@ -53,13 +53,19 @@
 #include <QMouseEvent>
 
 #include <math.h>
+#include <QtMath>
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
-    angularSpeed(0)
+    angularSpeed(0),
+    position(0.0f, 0.0f, 5.0f),
+    front(0.0f, 0.0f, -1.0f),
+    up(0.0f, 1.0f, 0.0f)
 {
+    this->setFocusPolicy(Qt::ClickFocus);
+    this->setMouseTracking(true);
 }
 
 MainWidget::~MainWidget()
@@ -98,6 +104,25 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     angularSpeed += acc;
 }
 //! [0]
+
+void MainWidget::keyPressEvent(QKeyEvent *e){
+    float sensibility = 0.1f;
+    switch (e->key()) {
+    case Qt::Key_Up:
+        position += front * sensibility;
+        break;
+    case Qt::Key_Down:
+        position -= front * sensibility;
+        break;
+    case Qt::Key_Left:
+        position -= QVector3D::crossProduct(front,up).normalized() * sensibility;
+        break;
+    case Qt::Key_Right:
+        position += QVector3D::crossProduct(front,up).normalized() * sensibility;
+        break;
+    }
+    update();
+}
 
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
@@ -207,7 +232,8 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    //matrix.translate(0.0, 0.0, -5.0);
+    matrix.lookAt(position, position + front, up);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
