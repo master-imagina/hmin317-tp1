@@ -107,7 +107,7 @@ int cpt = 0;
         for(int k = 0; k < 16;  k++)
         {
             z = rand() % 5;
-            vertices[cpt] ={QVector3D(i, j, z), QVector2D(l/10, k/10)};  // v0
+            vertices[cpt] ={QVector3D(i, j, z), QVector2D(l, k)};  // v0
                     i+=1.0f;
             cpt++;
         }
