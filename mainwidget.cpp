@@ -53,6 +53,7 @@
 #include <QMouseEvent>
 
 #include <math.h>
+#include <iostream>
 #include <QtMath>
 
 MainWidget::MainWidget(QWidget *parent) :

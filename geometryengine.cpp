@@ -194,7 +194,7 @@ void GeometryEngine::initPlaneGeometry()
     int count = 0;
     for(int i = 0; i < 16; ++i){
         for(int j = 0; j < 16; ++j){
-            float r =  (float(rand()) / float(RAND_MAX)) * (1.3 - 0.5) + 0.5;
+            float r =  (float(rand()) / float(RAND_MAX)) * (0.9 - 1.1) + 0.9;
             vertices[count++] = {QVector3D( j / 8.0f, i / 8.0f,  1.0f - r), QVector2D( i / 15.0f, j / 15.0f)};
         }
     }
