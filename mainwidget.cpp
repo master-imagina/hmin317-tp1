@@ -53,13 +53,20 @@
 #include <QMouseEvent>
 
 #include <math.h>
+#include <iostream>
+#include <QtMath>
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
-    angularSpeed(0)
+    angularSpeed(0),
+    position(0.0f, 0.0f, 5.0f),
+    front(0.0f, 0.0f, -1.0f),
+    up(0.0f, 1.0f, 0.0f)
 {
+    this->setFocusPolicy(Qt::ClickFocus);
+    this->setMouseTracking(true);
 }
 
 MainWidget::~MainWidget()
@@ -99,6 +106,25 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
 }
 //! [0]
 
+void MainWidget::keyPressEvent(QKeyEvent *e){
+    float sensibility = 0.1f;
+    switch (e->key()) {
+    case Qt::Key_Up:
+        position += front * sensibility;
+        break;
+    case Qt::Key_Down:
+        position -= front * sensibility;
+        break;
+    case Qt::Key_Left:
+        position -= QVector3D::crossProduct(front,up).normalized() * sensibility;
+        break;
+    case Qt::Key_Right:
+        position += QVector3D::crossProduct(front,up).normalized() * sensibility;
+        break;
+    }
+    update();
+}
+
 //! [1]
 void MainWidget::timerEvent(QTimerEvent *)
 {
@@ -132,7 +158,7 @@ void MainWidget::initializeGL()
     glEnable(GL_DEPTH_TEST);
 
     // Enable back face culling
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 //! [2]
 
     geometries = new GeometryEngine;
@@ -187,7 +213,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 1.0, zFar = 10.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -207,7 +233,8 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    //matrix.translate(0.0, 0.0, -5.0);
+    matrix.lookAt(position, position + front, up);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -218,5 +245,8 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
+    //geometries->drawCubeGeometry(&program);
+
+    //draw plane cube
+    geometries->drawPlaneGeometry(&program);
 }

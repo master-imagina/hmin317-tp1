@@ -71,6 +71,7 @@ GeometryEngine::GeometryEngine()
 
     // Initializes cube geometry and transfers it to VBOs
     initCubeGeometry();
+    initPlaneGeometry();
 }
 
 GeometryEngine::~GeometryEngine()
@@ -147,7 +148,7 @@ void GeometryEngine::initCubeGeometry()
     // Transfer index data to VBO 1
     indexBuf.bind();
     indexBuf.allocate(indices, 34 * sizeof(GLushort));
-//! [1]
+    //! [1]
 }
 
 //! [2]
@@ -177,3 +178,76 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
 }
 //! [2]
+
+//! [3]
+void GeometryEngine::initPlaneGeometry()
+{
+    // 16 fois 16 sommets.
+    VertexData vertices[16*16];
+
+    // 15 par 15 car nous ne relions pas les point en fin de ligne
+    // avec le premier de la ligne suivante
+    // puis tout ca par 6 car nous avons 6 point par étape.
+    GLushort indices[15*15*6];
+
+    //remplissage du tableau de sommets
+    int count = 0;
+    for(int i = 0; i < 16; ++i){
+        for(int j = 0; j < 16; ++j){
+            float r =  (float(rand()) / float(RAND_MAX)) * (0.9 - 1.1) + 0.9;
+            vertices[count++] = {QVector3D( j / 8.0f, i / 8.0f,  1.0f - r), QVector2D( i / 15.0f, j / 15.0f)};
+        }
+    }
+
+    count = 0;
+    //remplissage du tableau d'indices
+    for(int i = 0; i < 16 - 1; ++i){
+        for(int j = 0; j < 16 -1; ++j){
+            indices[count++] = (i*16) + j;
+            indices[count++] = (i*16) + j + 1;
+            indices[count++] = (i*16) + 16 + j;
+            indices[count++] = (i*16) + j + 1;
+            indices[count++] = (i*16) + 17 + j;
+            indices[count++] = (i*16) + j + 16;
+        }
+    }
+
+//! [1]
+    // Transfer vertex data to VBO 0
+    arrayBuf.bind();
+    arrayBuf.allocate(vertices, 16 * 16 * sizeof(VertexData));
+
+    // Transfer index data to VBO 1
+    indexBuf.bind();
+    indexBuf.allocate(indices, 15 * 15 * 6 * sizeof(GLushort));
+    //! [1]
+}
+
+void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
+{
+    // Tell OpenGL which VBOs to use
+    arrayBuf.bind();
+    indexBuf.bind();
+
+    // Offset for position
+    quintptr offset = 0;
+
+    // Tell OpenGL programmable pipeline how to locate vertex position data
+    int vertexLocation = program->attributeLocation("a_position");
+    program->enableAttributeArray(vertexLocation);
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+    // Offset for texture coordinate
+    offset += sizeof(QVector3D);
+
+    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
+    int texcoordLocation = program->attributeLocation("a_texcoord");
+    program->enableAttributeArray(texcoordLocation);
+    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+    // Draw cube geometry using indices from VBO 1
+    glDrawElements(GL_TRIANGLES, 15*15*6, GL_UNSIGNED_SHORT, 0);
+}
+
+//! [3]
+
