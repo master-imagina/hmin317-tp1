@@ -73,6 +73,7 @@ private:
 
     int nbX;
     int nbY;
+    int nbIndices;
 };
 
 #endif // GEOMETRYENGINE_H

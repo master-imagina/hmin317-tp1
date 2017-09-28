@@ -51,14 +51,20 @@
 #include "mainwidget.h"
 
 #include <QMouseEvent>
+#include <QKeyEvent>
+#include <Qt>
 
 #include <math.h>
+#include <iostream>
 
 MainWidget::MainWidget(QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
-    angularSpeed(0)
+    angularSpeed(0),
+    position(0.0, 0.0, -50),
+    wheelDirection(0),
+    rotation(QQuaternion::fromAxisAndAngle(0.0, 1.0, 0.0, 180.0))
 {
 }
 
@@ -97,6 +103,33 @@ void MainWidget::mouseReleaseEvent(QMouseEvent *e)
     // Increase angular speed
     angularSpeed += acc;
 }
+
+// Adding arrows pressed to the list of directions the camera will have to go
+void MainWidget::keyPressEvent(QKeyEvent *e)
+{
+    cameraDirections.push_back(e->key());
+}
+
+// Deleting the relevant key when released
+void MainWidget::keyReleaseEvent(QKeyEvent *e) {
+    for (unsigned int i = 0; i < cameraDirections.size(); i++) {
+        if (cameraDirections[i] == e->key()) {
+            cameraDirections.erase(cameraDirections.begin() + i);
+            break;
+        }
+    }
+}
+
+
+void MainWidget::wheelEvent(QWheelEvent *e)
+{
+    if(e->phase() == Qt::ScrollUpdate)
+    {
+        wheelDirection = (e->delta() > 0 ? 1 : -1);
+    }
+}
+
+
 //! [0]
 
 //! [1]
@@ -115,6 +148,40 @@ void MainWidget::timerEvent(QTimerEvent *)
         // Request an update
         update();
     }
+
+    const float speed = 0.03;
+    const float scrollSpeed = 0.15;
+    for (unsigned int i = 0; i < cameraDirections.size(); i++) {
+        switch (cameraDirections[i]) {
+            case Qt::Key_Up:
+                position.setY(position.y() - speed * elapsedTimer.elapsed());
+                update();
+                break;
+            case Qt::Key_Down:
+                position.setY(position.y() + speed * elapsedTimer.elapsed());
+                update();
+                break;
+            case Qt::Key_Left:
+                position.setX(position.x() + speed * elapsedTimer.elapsed());
+                update();
+                break;
+            case Qt::Key_Right:
+                position.setX(position.x() - speed * elapsedTimer.elapsed());
+                update();
+                break;
+        }
+    }
+
+    if(wheelDirection != 0)
+    {
+//        std::cout << "Scroll delta : " << wheelDirection << endl;
+        position.setZ(position.z() + wheelDirection * scrollSpeed * elapsedTimer.elapsed());
+        wheelDirection = 0;
+        update();
+    }
+
+
+    elapsedTimer.restart();
 }
 //! [1]
 
@@ -139,6 +206,8 @@ void MainWidget::initializeGL()
 
     // Use QBasicTimer because its faster than QTimer
     timer.start(12, this);
+
+    elapsedTimer.start();
 }
 
 //! [3]
@@ -166,7 +235,7 @@ void MainWidget::initShaders()
 void MainWidget::initTextures()
 {
     // Load cube.png image
-    texture = new QOpenGLTexture(QImage(":/cube.png").mirrored());
+    texture = new QOpenGLTexture(QImage(":/coralcastle_copie.png").mirrored());
 
     // Set nearest filtering mode for texture minification
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
@@ -177,6 +246,7 @@ void MainWidget::initTextures()
     // Wrap texture coordinates by repeating
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     texture->setWrapMode(QOpenGLTexture::Repeat);
+
 }
 //! [4]
 
@@ -187,7 +257,7 @@ void MainWidget::resizeGL(int w, int h)
     qreal aspect = qreal(w) / qreal(h ? h : 1);
 
     // Set near plane to 3.0, far plane to 7.0, field of view 45 degrees
-    const qreal zNear = 3.0, zFar = 7.0, fov = 45.0;
+    const qreal zNear = 1.0, zFar = 100.0, fov = 45.0;
 
     // Reset projection
     projection.setToIdentity();
@@ -207,7 +277,7 @@ void MainWidget::paintGL()
 //! [6]
     // Calculate model view transformation
     QMatrix4x4 matrix;
-    matrix.translate(0.0, 0.0, -5.0);
+    matrix.translate(position);
     matrix.rotate(rotation);
 
     // Set modelview-projection matrix
@@ -218,6 +288,6 @@ void MainWidget::paintGL()
     program.setUniformValue("texture", 0);
 
     // Draw cube geometry
-    geometries->drawCubeGeometry(&program);
-//    geometries->drawPlaneGeometry(&program);
+//    geometries->drawCubeGeometry(&program);
+    geometries->drawPlaneGeometry(&program);
 }
