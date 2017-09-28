@@ -13,6 +13,7 @@ void main()
 {
     // Set fragment color from texture
     gl_FragColor = texture2D(texture, v_texcoord);
+   // gl_FragColor = vec4(1.0f,0.0f,0.0f,1.0f);
 }
 //! [0]
 
