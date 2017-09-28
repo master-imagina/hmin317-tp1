@@ -103,8 +103,6 @@ private:
     qreal angularSpeed;
     QQuaternion rotation;
     int fov;
-    bool firstMouse;
-    float lastX, lastY;
 };
 
 #endif // MAINWIDGET_H

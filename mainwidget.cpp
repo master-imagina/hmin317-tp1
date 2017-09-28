@@ -59,11 +59,8 @@ MainWidget::MainWidget(QWidget *parent) :
     geometries(0),
     texture(0),
     angularSpeed(0),
-    camera(),
-    lastX(0.0f),
-    lastY(0.0f),
-    firstMouse(true)
-{
+    camera()
+    setMouseTracking(true);
 }
 
 MainWidget::~MainWidget()
@@ -146,17 +143,9 @@ void MainWidget::keyPressEvent(QKeyEvent *event) {
 
 void MainWidget::mouseMoveEvent(QMouseEvent *event) {
     if(event->buttons() & Qt::LeftButton) {
-        if(firstMouse) // this bool variable is initially set to true
-        {
-            lastX = event->x();
-            lastY = event->y();
-            firstMouse = false;
-        }
-        float xoffset = event->x() - lastX;
-        float yoffset = lastY - event->y(); // reversed since y-coordinates range from bottom to top
-        lastX = event->x();
-        lastY = event->y();
-
+        float xoffset = event->x() - mousePressPosition.x();
+        float yoffset = mousePressPosition.y() - event->y(); // reversed since y-coordinates range from bottom to top
+        mousePressPosition = QVector2D(event->localPos());
         camera.processMouseMovement(xoffset, yoffset);
         update();
     }
@@ -178,7 +167,6 @@ void MainWidget::initializeGL()
     // Enable back face culling
     //glEnable(GL_CULL_FACE);
 //! [2]
-    setMouseTracking(true);
     geometries = new GeometryEngine;
 
     // Use QBasicTimer because its faster than QTimer
