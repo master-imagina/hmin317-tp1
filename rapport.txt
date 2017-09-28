@@ -1,0 +1,12 @@
+Question 1 :
+La classe MainWidget représente la fenêtre principale. Elle permet d'initialiser et de gérer les paramètres OpenGL ainsi que les événements.
+La classe GeometryEngine quant à elle gère l'objet à afficher en lui même. On y retrouve notament les coordonnées du cube.
+
+Le fichier fshader représente le fragment shader. Ici il asigne la texture au fragment.
+Le fichier vshader représente le vertex shader. Il calcule la position des vertex sur l'écran et passe des informations au fshader pour gerer la texture.
+
+Question 2 :
+La fonction initCubeGeometry() permet d'initialiser les coordonées du cube et également ceux de la texture. Chaque vertex est associé à une coordonnée sur le fichier texture.
+Les indices des vertex sont stockés dans un tableau de telle sorte qu'il puisse être réprésentés sous forme de triangle strip. Ces deux tableaux sont enfin stockés dans les VBO.
+
+La fonction drawCubeGeometry 

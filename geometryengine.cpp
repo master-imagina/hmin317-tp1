@@ -52,6 +52,8 @@
 
 #include <QVector2D>
 #include <QVector3D>
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>       /* time */
 
 struct VertexData
 {
@@ -70,7 +72,7 @@ GeometryEngine::GeometryEngine()
     indexBuf.create();
 
     // Initializes cube geometry and transfers it to VBOs
-    initCubeGeometry();
+    initPlaneGeometry();
 }
 
 GeometryEngine::~GeometryEngine()
@@ -150,6 +152,76 @@ void GeometryEngine::initCubeGeometry()
 //! [1]
 }
 
+void GeometryEngine::initPlaneGeometry()
+{
+
+    int height = 16;
+    int width = 16;
+    VertexData vertices[height*width];
+
+    srand (time(NULL));
+    int r = 0;
+    int countXTex = 0;
+    int countYTex = 0;
+    int countVertices = 0;
+
+    for(int y = 0; y < height; ++y)
+    {
+        for(int x = 0; x < width; ++x)
+        {
+            r = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/2.0f));
+            vertices[countVertices++] = {QVector3D((float)x, (float)y, (float)r), QVector2D(countXTex/3.0f, countYTex/2.0f)};
+
+            if (countXTex == 3)
+            {
+                countXTex = 0;
+            }
+            else
+            {
+                ++countXTex;
+            }
+
+            if (countVertices%width == 0)
+            {
+                ++countYTex;
+            }
+        }
+    }
+
+    // pour chaque ligne du plan, 3 coordonnées doivents être dupliquées.
+    GLushort indices[(height*width)+(3*width)];
+    int countXIndice = 0;
+    int countYIndice = 16;
+    int count = 0;
+
+    for (int i = 0; i < (height*width)+(4*width); i = i+2)
+    {
+        if (count%(2*width) == 0 && count!=0)
+        {
+            indices[i] = countYIndice;
+            indices[i+1] = countXIndice+1;
+
+        }
+        else
+        {
+            indices[i] = countXIndice++;
+            indices[i+1] = countYIndice++;
+        }
+
+
+    }
+
+//! [1]
+    // Transfer vertex data to VBO 0
+    arrayBuf.bind();
+    arrayBuf.allocate(vertices, (height*width) * sizeof(VertexData));
+
+    // Transfer index data to VBO 1
+    indexBuf.bind();
+    indexBuf.allocate(indices, ((height*width)+(4*width)) * sizeof(GLushort));
+//! [1]
+}
+
 //! [2]
 void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
 {
@@ -177,3 +249,30 @@ void GeometryEngine::drawCubeGeometry(QOpenGLShaderProgram *program)
     glDrawElements(GL_TRIANGLE_STRIP, 34, GL_UNSIGNED_SHORT, 0);
 }
 //! [2]
+
+void GeometryEngine::drawPlaneGeometry(QOpenGLShaderProgram *program)
+{
+    // Tell OpenGL which VBOs to use
+    arrayBuf.bind();
+    indexBuf.bind();
+
+    // Offset for position
+    quintptr offset = 0;
+
+    // Tell OpenGL programmable pipeline how to locate vertex position data
+    int vertexLocation = program->attributeLocation("a_position");
+    program->enableAttributeArray(vertexLocation);
+    program->setAttributeBuffer(vertexLocation, GL_FLOAT, offset, 3, sizeof(VertexData));
+
+    // Offset for texture coordinate
+    offset += sizeof(QVector3D);
+
+    // Tell OpenGL programmable pipeline how to locate vertex texture coordinate data
+    int texcoordLocation = program->attributeLocation("a_texcoord");
+    program->enableAttributeArray(texcoordLocation);
+    program->setAttributeBuffer(texcoordLocation, GL_FLOAT, offset, 2, sizeof(VertexData));
+
+    // Draw cube geometry using indices from VBO 1
+
+    glDrawElements(GL_TRIANGLE_STRIP, 256, GL_UNSIGNED_SHORT, 0);
+}
