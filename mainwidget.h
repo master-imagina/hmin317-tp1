@@ -75,6 +75,8 @@ public:
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void keyPressEvent(QKeyEvent *e) override;
+    void keyReleaseEvent(QKeyEvent *e) override;
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
@@ -85,11 +87,17 @@ protected:
     void initTextures();
 
 private:
+    float scanX;
+    float scanY;
+    float scanZ;
+    bool imput[12];
+
     QBasicTimer timer;
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
 
     QOpenGLTexture *texture;
+    QOpenGLTexture *texture2;
 
     QMatrix4x4 projection;
 
