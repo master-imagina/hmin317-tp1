@@ -7,5 +7,6 @@
         <file>rock.png</file>
         <file>sand.png</file>
         <file>heightMap.png</file>
+        <file>Normal.png</file>
     </qresource>
 </RCC>

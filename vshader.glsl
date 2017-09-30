@@ -9,6 +9,7 @@ uniform mat4 mvp_matrix;
 
 uniform sampler2D texture;
 uniform float quantityVertices;
+uniform float timer;
 
 
 attribute vec4 a_position;
@@ -20,10 +21,13 @@ varying vec3 lightDir;
 varying float height;
 
 
+
 //! [0]
 void main()
 {
-    const vec3 omniLightPos = vec3(100,100,0);
+    float x = 100.0;
+    float y = 100.0;
+    vec3 omniLightPos = vec3(x,y,0.0);
     height = texture2D(texture, a_texcoord).r*10.0;
     // Calculate vertex position in screen space
     vec4 computePosition = vec4(a_position.x,height,a_position.z,1.0);

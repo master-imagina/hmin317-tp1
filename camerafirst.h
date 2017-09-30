@@ -10,7 +10,7 @@ class CameraFirst: public Camera
 public:
     CameraFirst(float distanceFromPivot);
     CameraFirst();
-    void move(float dx, float dy , int dw, int z, int s, int q, int d);
+    void move(float dx, float dy , int dw, int z, int s, int q, int d, int dHeigh);
 
     QMatrix4x4 getViewMatrix();
 

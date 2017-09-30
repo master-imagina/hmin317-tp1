@@ -56,7 +56,7 @@
 #include <math.h>
 
 
-MainWidget::MainWidget(QWidget *parent) :
+MainWidget::MainWidget(int msFramerate, QWidget *parent) :
     QOpenGLWidget(parent),
     geometries(0),
     texture(0),
@@ -64,17 +64,18 @@ MainWidget::MainWidget(QWidget *parent) :
     cliff(0),
     grass(0),
     rock(0),
+    cliffNormal(0),
     angularSpeed(0)
 {
-    this->setFocusPolicy(Qt::ClickFocus);
-    this->setMouseTracking(true);
     mouseHaveBeenPress = false;
     time = new QTimer;
     connect(time,SIGNAL(timeout()),this,SLOT(update()));
-    time->start(16);
-    keyZPressed=0,keySPressed=0,keyQPressed=0,keyDPressed=0;
+    time->start(msFramerate);
+    keyZPressed=0,keySPressed=0,keyQPressed=0,keyDPressed=0,keySpacePressed=0,keyMajPressed=0;
     this->setFocusPolicy(Qt::ClickFocus);
     this->setMouseTracking(true);
+    dx_autoRotate = 0;
+    paused = 0;
 }
 
 MainWidget::~MainWidget()
@@ -143,25 +144,68 @@ void MainWidget::wheelEvent(QWheelEvent *event)
 void MainWidget::keyPressEvent(QKeyEvent *event)
 {
 
-    if(event->text() == "z"){
+    if(event->key() == Qt::Key_Z){
         keyZPressed=1;
     }
-    if(event->text() == "s"){
+    if(event->key() == Qt::Key_S){
         keySPressed=1;
     }
-    if(event->text() == "q"){
+    if(event->key() == Qt::Key_Q){
         keyQPressed=1;
     }
-    if(event->text() == "d"){
+    if(event->key() == Qt::Key_D){
         keyDPressed=1;
     }
+    if(event->key() == Qt::Key_Space){
+        keySpacePressed = 1;
+    }
+    if(event->key() == Qt::Key_Shift){
+        keyMajPressed=1;
+    }
 
+    if(event->key() == Qt::Key_Minus){
+        keyMinusPressed=1;
+    }
+
+    if(event->key() == Qt::Key_Plus){
+        keyPlusPressed=1;
+    }
+
+    if(event->key() == Qt::Key_P){
+        paused = (paused +1)%2;
+
+    }
 
 }
 
 void MainWidget::keyReleaseEvent(QKeyEvent *event)
 {
-    keyZPressed=0,keySPressed=0,keyQPressed=0,keyDPressed=0;
+    if(event->key() == Qt::Key_Z){
+        keyZPressed=0;
+    }
+    if(event->key() == Qt::Key_S){
+        keySPressed=0;
+    }
+    if(event->key() == Qt::Key_Q){
+        keyQPressed=0;
+    }
+    if(event->key() == Qt::Key_D){
+        keyDPressed=0;
+    }
+    if(event->key() == Qt::Key_Space){
+        keySpacePressed = 0;
+    }
+    if(event->key() == Qt::Key_Shift){
+        keyMajPressed = 0;
+    }
+
+    if(event->key() == Qt::Key_Minus){
+        keyMinusPressed=0;
+    }
+
+    if(event->key() == Qt::Key_Plus){
+        keyPlusPressed=0;
+    }
 }
 //! [0]
 
@@ -190,11 +234,11 @@ void MainWidget::initializeGL()
 {
     initializeOpenGLFunctions();
 
-    glClearColor(0, 0, 0, 1);
+    glClearColor(0.2, 0.55, 1.0, 1);
 
     initShaders();
     initTextures();
-    camera.move(0,0,0,0,0,0,0);
+    camera.move(0,0,0,0,0,0,0,0);
 //! [2]
     // Enable depth buffer
     glEnable(GL_DEPTH_TEST);
@@ -309,6 +353,19 @@ void MainWidget::initTextures()
     // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
     grass->setWrapMode(QOpenGLTexture::Repeat);
     grass->setAutoMipMapGenerationEnabled(true);
+
+    cliffNormal = new QOpenGLTexture(QImage(":/Normal.png").mirrored());
+
+    // Set nearest filtering mode for texture minification
+    cliffNormal->setMinificationFilter(QOpenGLTexture::Linear);
+
+    // Set bilinear filtering mode for texture magnification
+    cliffNormal->setMagnificationFilter(QOpenGLTexture::Linear);
+
+    // Wrap texture coordinates by repeating
+    // f.ex. texture coordinate (1.1, 1.2) is same as (0.1, 0.2)
+    cliffNormal->setWrapMode(QOpenGLTexture::Repeat);
+    cliffNormal->setAutoMipMapGenerationEnabled(true);
 }
 //! [4]
 
@@ -332,7 +389,13 @@ void MainWidget::resizeGL(int w, int h)
 void MainWidget::paintGL()
 {
     this->makeCurrent();
-    camera.move(dx,dy,wheelDelta,keyZPressed,keySPressed,keyQPressed,keyDPressed);
+    if(paused ){
+        camera.move(dx,dy,wheelDelta,keyZPressed,keySPressed,keyQPressed,keyDPressed,keySpacePressed-keyMajPressed);
+    }
+    else{
+        dx_autoRotate += 0.2f * (keyPlusPressed - keyMinusPressed);
+        camera.move(dx_autoRotate,dy,wheelDelta,keyZPressed,keySPressed,keyQPressed,keyDPressed,keySpacePressed-keyMajPressed);
+    }
 
     dx=0,dy=0;
     wheelDelta = 0;
@@ -344,6 +407,7 @@ void MainWidget::paintGL()
     grass->bind(2);
     cliff->bind(3);
     rock->bind(4);
+    cliffNormal->bind(5);
 
 //! [6]
     // Calculate model view transformation
@@ -360,6 +424,8 @@ void MainWidget::paintGL()
     program.setUniformValue("sand", 1);
     program.setUniformValue("rock", 4);
     program.setUniformValue("cliff",3);
+    program.setUniformValue("cliffNormal",5);
+    program.setUniformValue("timer", timer->currentTime().msec());
 
     // Draw cube geometry
     geometries->drawPlaneGeometry(&program);

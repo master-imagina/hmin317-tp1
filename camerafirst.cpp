@@ -25,7 +25,7 @@ CameraFirst::CameraFirst()
 }
 
 
-void CameraFirst::move(float dx, float dy, int dw, int z, int s, int q, int d){
+void CameraFirst::move(float dx, float dy, int dw, int z, int s, int q, int d,int dHeigh){
 
     pitch += dy * 0.3f;
     yaw += dx * 0.3f;
@@ -74,8 +74,11 @@ void CameraFirst::move(float dx, float dy, int dw, int z, int s, int q, int d){
 
         position.z += right.z *1.5f ;
 
-
     }
+
+
+    position.y += 0.7f*dHeigh;
+
 
 
 }

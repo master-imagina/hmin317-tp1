@@ -23,7 +23,7 @@ CameraThird::CameraThird()
 }
 
 
-void CameraThird::move(float dx, float dy, int dw, int z, int s, int q, int d){
+void CameraThird::move(float dx, float dy, int dw, int z, int s, int q, int d, int dheigh){
     float zoomLevel = dw;
 
     if(distanceFromPivot - zoomLevel > 1.0f && distanceFromPivot - zoomLevel < 3000 )
