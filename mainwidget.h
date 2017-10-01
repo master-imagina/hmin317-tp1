@@ -58,9 +58,13 @@
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include <QVector2D>
-#include <QBasicTimer>
+
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include "camerathird.h"
+#include "camerafirst.h"
+#include <QTimer>
+#include <QTime>
 
 class GeometryEngine;
 
@@ -69,12 +73,16 @@ class MainWidget : public QOpenGLWidget, protected QOpenGLFunctions
     Q_OBJECT
 
 public:
-    explicit MainWidget(QWidget *parent = 0);
+    explicit MainWidget(int msFramerate,QWidget *parent = 0);
     ~MainWidget();
 
 protected:
     void mousePressEvent(QMouseEvent *e) override;
     void mouseReleaseEvent(QMouseEvent *e) override;
+    void mouseMoveEvent(QMouseEvent *event);
+    void wheelEvent ( QWheelEvent * event );
+    void keyPressEvent(QKeyEvent* event);
+    void keyReleaseEvent(QKeyEvent* event);
     void timerEvent(QTimerEvent *e) override;
 
     void initializeGL() override;
@@ -84,19 +92,35 @@ protected:
     void initShaders();
     void initTextures();
 
+public slots:
+
+
 private:
-    QBasicTimer timer;
+
+    QTimer * time;
+    QTime * timer;
     QOpenGLShaderProgram program;
     GeometryEngine *geometries;
+    float dx_autoRotate;
 
     QOpenGLTexture *texture;
+    QOpenGLTexture *sand;
+    QOpenGLTexture *cliff;
+    QOpenGLTexture *grass;
+    QOpenGLTexture *rock;
 
-    QMatrix4x4 projection;
+    QOpenGLTexture *cliffNormal;
+    bool mouseHaveBeenPress;
 
+    QPoint anchor;
     QVector2D mousePressPosition;
     QVector3D rotationAxis;
     qreal angularSpeed;
     QQuaternion rotation;
+    CameraThird camera;
+    float dx,dy,wheelDelta;
+    int keyZPressed,keySPressed,keyQPressed,keyDPressed,keySpacePressed,keyMajPressed, keyPlusPressed, keyMinusPressed;
+    int paused;
 };
 
 #endif // MAINWIDGET_H

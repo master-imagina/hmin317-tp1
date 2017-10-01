@@ -3,15 +3,25 @@ QT       += core gui widgets
 TARGET = cube
 TEMPLATE = app
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    camerafirst.cpp
+
+INCLUDEPATH+= $$PWD/external/glm/
 
 SOURCES += \
     mainwidget.cpp \
-    geometryengine.cpp
+    geometryengine.cpp\
+    camera.cpp\
+    camerathird.cpp\
+    utils.cpp
 
 HEADERS += \
     mainwidget.h \
-    geometryengine.h
+    geometryengine.h\
+    camera.h\
+    camerathird.h\
+    utils.h \
+    camerafirst.h
 
 RESOURCES += \
     shaders.qrc \
